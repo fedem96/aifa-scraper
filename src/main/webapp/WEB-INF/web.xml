@@ -6,33 +6,4 @@
 
     <display-name>Restful Web Application</display-name>
 
-    <!-- Auto scan REST service -->
-<!--    <context-param>-->
-<!--        <param-name>resteasy.scan</param-name>-->
-<!--        <param-value>true</param-value>-->
-<!--    </context-param>-->
-
-    <!-- this need same with resteasy servlet url-pattern -->
-    <context-param>
-        <param-name>resteasy.servlet.mapping.prefix</param-name>
-        <param-value>/rest</param-value>
-    </context-param>
-
-    <listener>
-        <listener-class>
-            org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap
-        </listener-class>
-    </listener>
-
-<!--    <servlet>-->
-<!--        <servlet-name>resteasy-servlet</servlet-name>-->
-<!--        <servlet-class>-->
-<!--            org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher-->
-<!--        </servlet-class>-->
-<!--    </servlet>-->
-
-<!--    <servlet-mapping>-->
-<!--        <servlet-name>resteasy-servlet</servlet-name>-->
-<!--        <url-pattern>/rest/*</url-pattern>-->
-<!--    </servlet-mapping>-->
 </web-app>

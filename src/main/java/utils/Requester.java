@@ -13,10 +13,12 @@ public class Requester {
 
     String endpointURL;
     String method;
+    long downloadedBytes;
 
     public Requester() {
         endpointURL = "https://www.agenziafarmaco.gov.it/services/search/select";
         method = "GET";
+        downloadedBytes = 0;
     }
 
     public String sendRequest(Map<String, String> parameters) throws IOException {
@@ -38,7 +40,10 @@ public class Requester {
         in.close();
         con.disconnect();
 
-        return content.toString();
+        String contentString =  content.toString();
+        downloadedBytes += contentString.length()*2;
+        System.out.println("downloaded " + contentString.length()*2 + " bytes (total: " + downloadedBytes + " bytes)");
+        return contentString;
     }
 
 }
