@@ -3,6 +3,7 @@ package dao;
 import model.Company;
 
 import javax.persistence.NoResultException;
+import java.util.List;
 
 public class CompanyDao extends BaseDao<Company> {
 
@@ -17,5 +18,13 @@ public class CompanyDao extends BaseDao<Company> {
         catch (NoResultException nre){
             return null;
         }
+    }
+
+    public List<Company> search(String company) { // TODO: handle max results / pages
+        return entityManager.createQuery("FROM Company " +
+                "WHERE description LIKE :company")
+                .setParameter("company", "%" + company + "%")
+                .setMaxResults(10)
+                .getResultList();
     }
 }

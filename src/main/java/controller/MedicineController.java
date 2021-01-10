@@ -10,6 +10,7 @@ import tech.tablesaw.api.Table;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.List;
 
 public class MedicineController {
 
@@ -37,5 +38,9 @@ public class MedicineController {
             medicine.setPrinciple(principleDao.findByAtc(row.getString("sm_field_codice_atc")));
             medicineDao.save(medicine);
         }
+    }
+
+    public List<Medicine> search(String medicine){
+        return medicineDao.search(medicine);
     }
 }

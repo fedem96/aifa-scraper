@@ -1,5 +1,8 @@
 package model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class BaseEntity {
+public abstract class BaseEntity {//TODO: tostring JSON
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
@@ -55,5 +58,16 @@ public abstract class BaseEntity {
         }
         BaseEntity other = (BaseEntity) obj;
         return uuid.equals( other.getUuid() );
+    }
+
+    @Override
+    public String toString(){
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }

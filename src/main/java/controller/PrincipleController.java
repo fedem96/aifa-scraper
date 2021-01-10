@@ -8,6 +8,7 @@ import tech.tablesaw.api.Table;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.List;
 
 public class PrincipleController {
 
@@ -26,5 +27,9 @@ public class PrincipleController {
             principle.setDescription(row.getString("sm_field_descrizione_atc"));
             principleDao.save(principle);
         }
+    }
+
+    public List<Principle> search(String principle){
+        return principleDao.search(principle);
     }
 }

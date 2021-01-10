@@ -25,6 +25,7 @@ dependencies {
 //    compileOnly('javax.transaction:javax.transaction-api:1.3')
     compileOnly('org.jboss.resteasy:resteasy-jaxrs:3.12.1.Final')
     compile('tech.tablesaw:tablesaw-core:0.38.1')
+    compile('com.fasterxml.jackson.core:jackson-databind:2.9.8')
 
     testImplementation('org.testng:testng:7.1.0')
 }

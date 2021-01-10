@@ -21,7 +21,7 @@ import java.util.Map;
 import static java.lang.System.currentTimeMillis;
 
 @Path("scrape")
-public class Scraper {
+public class Scraper { // TODO: handle date
 
     @Inject
     CompanyController companyController;

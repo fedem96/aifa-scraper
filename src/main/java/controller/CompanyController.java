@@ -8,6 +8,7 @@ import tech.tablesaw.api.Table;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.List;
 
 public class CompanyController {
 
@@ -26,6 +27,10 @@ public class CompanyController {
             company.setDescription(row.getString("sm_field_descrizione_ditta"));
             companyDao.save(company);
         }
+    }
+
+    public List<Company> search(String company){
+        return companyDao.search(company);
     }
 
 }
