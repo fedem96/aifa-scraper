@@ -4,15 +4,20 @@ import controller.CompanyController;
 import controller.MedicineController;
 import controller.PackagingController;
 import controller.PrincipleController;
+import model.Company;
+import model.Medicine;
+import model.Principle;
 import tech.tablesaw.api.Table;
-import utils.Requester;
+import requester.Requester;
 
 import javax.inject.Inject;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -34,18 +39,19 @@ public class Scraper { // TODO: handle date
 
     @PUT
     @Produces(MediaType.TEXT_PLAIN)
-    public Response scrape() {
+    public Response scrape(@QueryParam("rows") String rows) {
+
         // TODO: finish and refactor
         long start = currentTimeMillis();
         Map<String,String> parameters = new HashMap<String,String>();
         parameters.put("q", "bundle:confezione_farmaco+sm_field_descrizione_farmaco:*");
         parameters.put("df", "sm_field_descrizione_farmaco");
         parameters.put("wt", "csv");
-        parameters.put("rows", "200");
+        parameters.put("rows", rows);
         try {
             String csvText = new Requester().sendRequest(parameters);
+            System.out.println(csvText);
             Table table = Table.read().csv(new StringReader(csvText));
-//            System.out.println(table.columns().stream().map(col -> col.name() + "\n").collect(Collectors.joining()));
 
             Table tabMedicines = table.select("sm_field_codice_farmaco", "sm_field_descrizione_farmaco", "sm_field_link_fi", "sm_field_link_rcp",
                     "sm_field_codice_atc", "sm_field_codice_ditta").dropDuplicateRows(); // TODO: handle missing values
@@ -59,13 +65,16 @@ public class Scraper { // TODO: handle date
 //            System.out.println("\nPRINCIPI" + tabPrinciples.first(20));
 //            System.out.println("\nCONFEZIONI" + tabPackagings.first(20));
 
-            companyController.addCompanies(tabCompanies);
-            principleController.addPrinciples(tabPrinciples);
-            medicineController.addMedicines(tabMedicines);
-            packagingController.addPackagings(tabPackagings);
+            Map<Long, Company> mapCompanies = companyController.addCompanies(tabCompanies);
+            Map<String, Principle> mapPrinciples = principleController.addPrinciples(tabPrinciples);
+            Map<Long, Medicine> medicinesMap = medicineController.addMedicines(tabMedicines, mapCompanies, mapPrinciples);
+            packagingController.addPackagings(tabPackagings, medicinesMap);
 
             return Response.ok().entity("done in " + ((currentTimeMillis()-start)*0.001) + " seconds").build();
-        } catch (IOException e) {
+        } catch (FileNotFoundException e){
+            return Response.serverError().entity("remote service unavailable").build();
+        }
+        catch (IOException e) {
             return Response.serverError().build();
         }
     }

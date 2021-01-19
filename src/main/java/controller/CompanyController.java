@@ -8,7 +8,9 @@ import tech.tablesaw.api.Table;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CompanyController {
 
@@ -16,7 +18,8 @@ public class CompanyController {
     private CompanyDao companyDao;
 
     @Transactional
-    public void addCompanies(Table tab){
+    public Map<Long, Company> addCompanies(Table tab){
+        Map<Long, Company> map = new HashMap<>();
         for (Row row: tab){
             long code = row.getInt("sm_field_codice_ditta");
             Company company = companyDao.findByCode(code);
@@ -26,7 +29,9 @@ public class CompanyController {
             company.setCode(code);
             company.setDescription(row.getString("sm_field_descrizione_ditta"));
             companyDao.save(company);
+            map.put(code, company);
         }
+        return map;
     }
 
     public List<Company> search(String company){

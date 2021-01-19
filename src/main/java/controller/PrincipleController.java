@@ -8,7 +8,9 @@ import tech.tablesaw.api.Table;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PrincipleController {
 
@@ -16,7 +18,8 @@ public class PrincipleController {
     PrincipleDao principleDao;
 
     @Transactional
-    public void addPrinciples(Table tab){
+    public Map<String, Principle> addPrinciples(Table tab){
+        Map<String, Principle> map = new HashMap<>();
         for (Row row: tab){
             String atc = row.getString("sm_field_codice_atc");
             Principle principle = principleDao.findByAtc(atc);
@@ -26,7 +29,9 @@ public class PrincipleController {
             principle.setAtc(atc);
             principle.setDescription(row.getString("sm_field_descrizione_atc"));
             principleDao.save(principle);
+            map.put(atc, principle);
         }
+        return map;
     }
 
     public List<Principle> search(String principle){

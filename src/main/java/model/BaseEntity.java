@@ -62,9 +62,8 @@ public abstract class BaseEntity {//TODO: tostring JSON
 
     @Override
     public String toString(){
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.writeValueAsString(this);
+            return new ObjectMapper().writeValueAsString(this);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return "";
