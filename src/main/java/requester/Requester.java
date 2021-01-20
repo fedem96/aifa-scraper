@@ -5,21 +5,28 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Requester {
-    // TODO: refactor
 
     String endpointURL;
     String method;
     long downloadedBytes;
 
-    public Requester() {
+    static Requester instance;
+
+    private Requester() {
         endpointURL = "https://www.agenziafarmaco.gov.it/services/search/select";
         method = "GET";
         downloadedBytes = 0;
+    }
+
+    public static Requester getInstance() {
+        if (instance == null) {
+            instance = new Requester();
+        }
+        return instance;
     }
 
     public String sendRequest(Map<String, String> parameters) throws IOException {
@@ -43,7 +50,8 @@ public class Requester {
 
         String contentString =  content.toString();
         downloadedBytes += contentString.length()*2;
-        System.out.println("downloaded " + contentString.length()*2 + " bytes (total: " + downloadedBytes + " bytes)");
+        System.out.println("downloaded " + String.format("%.3f", contentString.length()*2.0/1024/1024) + " MiB" +
+                             " (total: " + String.format("%.3f", downloadedBytes*2.0/1024/1024) + " MiB)");
         return contentString;
     }
 
