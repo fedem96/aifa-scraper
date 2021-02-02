@@ -27,4 +27,13 @@ public class CompanyDao extends BaseDao<Company> {
                 .setMaxResults(10)
                 .getResultList();
     }
+
+    public List<Company> getAll() {
+        try {
+            return entityManager.createQuery("from Company").getResultList();
+        }
+        catch (NoResultException nre){
+            return null;
+        }
+    }
 }

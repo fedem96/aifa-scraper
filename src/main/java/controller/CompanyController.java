@@ -38,4 +38,11 @@ public class CompanyController {
         return companyDao.search(company);
     }
 
+    public Company getById(Long companyId) {
+        return companyDao.findById(companyId);
+    }
+
+    public List<Company> getAllCompanies() {
+        return companyDao.getAll();
+    }
 }

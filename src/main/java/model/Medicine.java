@@ -1,9 +1,10 @@
 package model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "medicines")
@@ -14,6 +15,9 @@ public class Medicine extends BaseEntity {
     private String description;
     private String linkFi;
     private String linkRcp;
+
+    @OneToMany(fetch=FetchType.EAGER) // TODO: change FetchType
+    private List<Packaging> packagings;
 
     @ManyToOne
     private Company company;
@@ -72,5 +76,13 @@ public class Medicine extends BaseEntity {
 
     public void setPrinciple(Principle principle) {
         this.principle = principle;
+    }
+
+    public List<Packaging> getPackagings() {
+        return packagings;
+    }
+
+    public void setPackagings(List<Packaging> packagings) {
+        this.packagings = packagings;
     }
 }

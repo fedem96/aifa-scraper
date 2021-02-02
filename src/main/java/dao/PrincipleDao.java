@@ -26,4 +26,13 @@ public class PrincipleDao extends BaseDao<Principle> {
                 .setMaxResults(10)
                 .getResultList(); // TODO: order
     }
+
+    public List<Principle> getAll() {
+        try {
+            return entityManager.createQuery("from Principle").getResultList();
+        }
+        catch (NoResultException nre){
+            return null;
+        }
+    }
 }

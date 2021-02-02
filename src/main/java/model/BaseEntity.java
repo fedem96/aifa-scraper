@@ -1,5 +1,6 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -10,13 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class BaseEntity {//TODO: tostring JSON
+public abstract class BaseEntity {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Long id;
 
     @Column( unique = true )
+    @JsonIgnore
     private String uuid;
 
     protected BaseEntity() {

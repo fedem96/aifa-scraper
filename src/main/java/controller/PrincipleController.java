@@ -1,6 +1,7 @@
 package controller;
 
 import dao.PrincipleDao;
+import model.Medicine;
 import model.ModelFactory;
 import model.Principle;
 import tech.tablesaw.api.Row;
@@ -36,5 +37,14 @@ public class PrincipleController {
 
     public List<Principle> search(String principle){
         return principleDao.search(principle);
+    }
+
+
+    public Principle getById(Long principleId) {
+        return principleDao.findById(principleId);
+    }
+
+    public List<Principle> getAllPrinciples() {
+        return principleDao.getAll();
     }
 }

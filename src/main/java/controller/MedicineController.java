@@ -43,4 +43,12 @@ public class MedicineController {
     public List<Medicine> search(String medicine){
         return medicineDao.search(medicine);
     }
+
+    public Medicine getById(Long medicineId) {
+        return medicineDao.findById(medicineId);
+    }
+
+    public List<Medicine> getAllMedicines() {
+        return medicineDao.getAll();
+    }
 }

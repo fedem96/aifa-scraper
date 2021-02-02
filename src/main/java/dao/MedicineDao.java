@@ -26,4 +26,13 @@ public class MedicineDao extends BaseDao<Medicine> {
             return null;
         }
     }
+
+    public List<Medicine> getAll() {
+        try {
+            return entityManager.createQuery("from Medicine").getResultList();
+        }
+        catch (NoResultException nre){
+            return null;
+        }
+    }
 }
