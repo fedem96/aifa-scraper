@@ -11,16 +11,7 @@ import java.util.Date;
 public class LastUpdate extends BaseEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date company;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date medicine;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date packaging;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date principle;
+    private Date lastUpdateDate;
 
     protected LastUpdate(){}
 
@@ -28,35 +19,11 @@ public class LastUpdate extends BaseEntity {
         super(uuid);
     }
 
-    public Date getCompany() {
-        return company;
+    public Date getLastUpdateDate() {
+        return lastUpdateDate;
     }
 
-    public void setCompany(Date company) {
-        this.company = company;
-    }
-
-    public Date getMedicine() {
-        return medicine;
-    }
-
-    public void setMedicine(Date medicine) {
-        this.medicine = medicine;
-    }
-
-    public Date getPackaging() {
-        return packaging;
-    }
-
-    public void setPackaging(Date packaging) {
-        this.packaging = packaging;
-    }
-
-    public Date getPrinciple() {
-        return principle;
-    }
-
-    public void setPrinciple(Date principle) {
-        this.principle = principle;
+    public void setLastUpdateDate(Date lastUpdateDate) {
+        this.lastUpdateDate = lastUpdateDate;
     }
 }

@@ -15,7 +15,7 @@ import java.io.IOException;
 import static java.lang.System.currentTimeMillis;
 
 @Path("scrape")
-public class Scraper { // TODO: handle date
+public class Scraper {
 
     @Inject
     ScrapeController scrapeController;

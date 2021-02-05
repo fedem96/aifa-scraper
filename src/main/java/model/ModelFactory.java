@@ -23,4 +23,7 @@ public class ModelFactory {
         return new Principle(UUID.randomUUID().toString());
     }
 
+    public static LastUpdate lastUpdate() {
+        return new LastUpdate(UUID.randomUUID().toString());
+    }
 }
