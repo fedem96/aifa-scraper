@@ -10,21 +10,21 @@ public class MedicineDao extends BaseDao<Medicine> {
         super(Medicine.class);
     }
 
-    public List<Medicine> search(String medicine) { // TODO: handle max results / pages
-        return entityManager.createQuery("FROM Medicine " +
-                "WHERE description LIKE :medicine")
-                .setParameter("medicine", "%" + medicine + "%")
-                .setMaxResults(10)
-                .getResultList();
-    }
-
-    public Medicine findByCode(long code) { // TODO: speedup
+    public Medicine findByCode(long code) {
         try {
             return (Medicine) entityManager.createQuery("from Medicine where code=:code").setParameter("code", code).getSingleResult();
         }
         catch (NoResultException nre){
             return null;
         }
+    }
+
+    public List<Medicine> search(String medicine) { // TODO: handle max results / pages
+        return entityManager.createQuery("FROM Medicine " +
+                "WHERE description LIKE :medicine")
+                .setParameter("medicine", "%" + medicine + "%")
+                .setMaxResults(10)
+                .getResultList();
     }
 
     public List<Medicine> getAll() {

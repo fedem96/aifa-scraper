@@ -31,7 +31,7 @@ public class FileRequester extends Requester{
         String contentString =  sb.toString();
         downloadedBytes += contentString.length()*2;
         System.out.println("downloaded " + String.format("%.3f", contentString.length()*2.0/1024/1024) + " MiB" +
-                " (total: " + String.format("%.3f", downloadedBytes*2.0/1024/1024) + " MiB)");
+                " (total: " + String.format("%.3f", downloadedBytes*1.0/1024/1024) + " MiB)");
         return contentString;
     }
 }

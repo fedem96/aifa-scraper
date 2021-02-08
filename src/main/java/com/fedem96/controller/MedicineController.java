@@ -8,7 +8,6 @@ import com.fedem96.model.Medicine;
 import com.fedem96.model.ModelFactory;
 import com.fedem96.model.Principle;
 import tech.tablesaw.api.Row;
-import tech.tablesaw.api.Table;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -24,9 +23,9 @@ public class MedicineController {
     private MedicineMapper medicineMapper;
 
     @Transactional
-    public Map<Long, Medicine> addMedicines(Table tab, Map<Long, Company> mapCompanies, Map<String, Principle> mapPrinciples){
+    public Map<Long, Medicine> addMedicines(Iterable<Row> rows, Map<Long, Company> mapCompanies, Map<String, Principle> mapPrinciples){
         Map<Long, Medicine> map = new HashMap<>();
-        for (Row row: tab){
+        for (Row row: rows){
             long code = row.getInt("sm_field_codice_farmaco");
             Medicine medicine = medicineDao.findByCode(code);
             if(medicine == null){

@@ -4,7 +4,6 @@ import com.fedem96.dao.PrincipleDao;
 import com.fedem96.model.ModelFactory;
 import com.fedem96.model.Principle;
 import tech.tablesaw.api.Row;
-import tech.tablesaw.api.Table;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -18,9 +17,9 @@ public class PrincipleController {
     PrincipleDao principleDao;
 
     @Transactional
-    public Map<String, Principle> addPrinciples(Table tab){
+    public Map<String, Principle> addPrinciples(Iterable<Row> rows){
         Map<String, Principle> map = new HashMap<>();
-        for (Row row: tab){
+        for (Row row: rows){
             String atc = row.getString("sm_field_codice_atc");
             Principle principle = principleDao.findByAtc(atc);
             if(principle == null){

@@ -10,9 +10,8 @@ public class PrincipleDao extends BaseDao<Principle> {
         super(Principle.class);
     }
 
-    public Principle findByAtc(String atc) { // TODO: speedup
+    public Principle findByAtc(String atc) {
         try {
-            System.out.println("fasfasfa");
             return (Principle) entityManager.createQuery("from Principle where atc=:atc").setParameter("atc", atc).getSingleResult();
         }
         catch (NoResultException nre){

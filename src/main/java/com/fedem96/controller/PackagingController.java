@@ -5,19 +5,20 @@ import com.fedem96.model.Medicine;
 import com.fedem96.model.ModelFactory;
 import com.fedem96.model.Packaging;
 import tech.tablesaw.api.Row;
-import tech.tablesaw.api.Table;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.Map;
 
 public class PackagingController {
     @Inject
     PackagingDao packagingDao;
 
-    @Transactional  // TODO: change timeout?
-    public void addPackagings(Table tab, Map<Long, Medicine> medicinesMap){ // TODO: batch insert
-        for (Row row: tab){
+    @Transactional
+    public Map<Long, Packaging> addPackagings(Iterable<Row> rows, Map<Long, Medicine> medicinesMap){
+        Map<Long, Packaging> map = new HashMap<>();
+        for (Row row: rows){
             long aic = row.getInt("sm_field_aic");
             Packaging packaging = packagingDao.findByAic(aic);
             if(packaging == null){
@@ -28,6 +29,8 @@ public class PackagingController {
             packaging.setState(row.getString("sm_field_stato_farmaco"));
             packaging.setMedicine(medicinesMap.get((long) row.getInt("sm_field_codice_farmaco")));
             packagingDao.save(packaging);
+            map.put(aic, packaging);
         }
+        return map;
     }
 }

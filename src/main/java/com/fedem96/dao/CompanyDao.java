@@ -11,7 +11,7 @@ public class CompanyDao extends BaseDao<Company> {
         super(Company.class);
     }
 
-    public Company findByCode(long code) { // TODO: speedup
+    public Company findByCode(long code) {
         try {
             return (Company) entityManager.createQuery("from Company where code=:code").setParameter("code", code).getSingleResult();
         }

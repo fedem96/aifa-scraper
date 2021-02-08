@@ -32,6 +32,7 @@ public class Scraper {
                 scrapeController.scrapeURL(url, rows);
             else
                 scrapeController.scrapeFile(file, rows);
+            scrapeController.setLastUpdate();
             return Response.ok().entity("done in " + ((currentTimeMillis()-start)*0.001) + " seconds").build();
         } catch (FileNotFoundException e){
             return Response.serverError().entity("remote service unavailable").build();

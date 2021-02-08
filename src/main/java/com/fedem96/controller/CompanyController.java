@@ -4,7 +4,6 @@ import com.fedem96.dao.CompanyDao;
 import com.fedem96.model.Company;
 import com.fedem96.model.ModelFactory;
 import tech.tablesaw.api.Row;
-import tech.tablesaw.api.Table;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -18,9 +17,9 @@ public class CompanyController {
     private CompanyDao companyDao;
 
     @Transactional
-    public Map<Long, Company> addCompanies(Table tab){
+    public Map<Long, Company> addCompanies(Iterable<Row> rows){
         Map<Long, Company> map = new HashMap<>();
-        for (Row row: tab){
+        for (Row row: rows){
             long code = row.getInt("sm_field_codice_ditta");
             Company company = companyDao.findByCode(code);
             if(company == null){
