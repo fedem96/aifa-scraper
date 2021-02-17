@@ -12,10 +12,10 @@ public class CompanyMapper extends BaseMapper<Company, CompanyDto>{
         }
         CompanyDto compDto = new CompanyDto();
         compDto.setId(company.getId()); // TODO: probably it's code instead of id
-//        compDto.setAddress(); // TODO: where is the address?
-//        compDto.setEmail(); // TODO: where is the email?
-//        compDto.setLogo(); // TODO: where is the logo?
-//        compDto.setWebsite(); // TODO: where is the website?
+        compDto.setAddress("Via Roma 1, Roma");
+        compDto.setEmail(company.getDescription().toLowerCase().replaceAll("(\\s)|(\\.)", "") + "@website.example");
+        compDto.setLogo("http://website.example/logo.png");
+        compDto.setWebsite("http://website.example");
         compDto.setName(company.getDescription());
         return compDto;
     }

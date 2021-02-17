@@ -26,6 +26,7 @@ public class Scraper {
         if(url != null && file != null){
             return Response.serverError().entity("at most one between url and file can be set").build();
         }
+        System.out.println("Scraping");
         long start = currentTimeMillis();
         try {
             if(file == null)

@@ -33,16 +33,15 @@ public class PrincipleController {
         return map;
     }
 
-    public List<Principle> search(String principle){
-        return principleDao.search(principle);
-    }
-
-
     public Principle getById(Long principleId) {
         return principleDao.findById(principleId);
     }
 
     public List<Principle> getAllPrinciples() {
         return principleDao.getAll();
+    }
+
+    public List<Principle> search(String principle){
+        return principleDao.search(principle);
     }
 }

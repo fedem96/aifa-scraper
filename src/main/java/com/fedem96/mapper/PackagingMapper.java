@@ -3,6 +3,8 @@ package com.fedem96.mapper;
 import com.fedem96.dto.PackagingDto;
 import com.fedem96.model.Packaging;
 
+import java.util.Random;
+
 public class PackagingMapper extends BaseMapper<Packaging, PackagingDto>{
 
     @Override
@@ -10,17 +12,19 @@ public class PackagingMapper extends BaseMapper<Packaging, PackagingDto>{
         if(packaging == null){
             throw new IllegalArgumentException("The packaging to convert is null");
         }
+        Random r = new Random();
         PackagingDto packDto = new PackagingDto();
         packDto.setId(packaging.getId());
-//        packDto.setCompany(); // TODO: no company?
+        packDto.setCompany(packaging.getMedicine().getCompany().getId());
+        packDto.setCompanyName(packaging.getMedicine().getCompany().getDescription());
         packDto.setDescription(packaging.getDescription());
-        packDto.setName(packaging.getDescription()); // TODO: no between name and description
-//        packDto.setPrice(); // TODO: where is the price?
-//        packDto.setGluten();// TODO: where is gluten?
-//        packDto.setLactose();// TODO: where is lactose?
-        packDto.setLeaflet(packaging.getMedicine().getLinkFi()); // TODO: leaflet is the same for different packagings
-//        packDto.setType(); // TODO: what is this?
-//        packDto.setVersionClass();// TODO: what is this?
+        packDto.setName(packaging.getDescription());
+        packDto.setPrice(r.nextFloat());
+        packDto.setGluten(r.nextBoolean());
+        packDto.setLactose(r.nextBoolean());
+        packDto.setLeaflet(packaging.getMedicine().getLinkFi());
+        packDto.setType(new String[]{"BOTTLE", "CAPSULES", "PLASTER", "SYRINGE", "TABLETS"}[r.nextInt(5)]);
+        packDto.setVersionClass(new String[]{"A", "C", "CN", "H"}[r.nextInt(4)]);
         return packDto;
     }
 }

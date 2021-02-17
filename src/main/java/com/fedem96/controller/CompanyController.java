@@ -1,6 +1,8 @@
 package com.fedem96.controller;
 
 import com.fedem96.dao.CompanyDao;
+import com.fedem96.dto.CompanyDto;
+import com.fedem96.mapper.CompanyMapper;
 import com.fedem96.model.Company;
 import com.fedem96.model.ModelFactory;
 import tech.tablesaw.api.Row;
@@ -15,6 +17,8 @@ public class CompanyController {
 
     @Inject
     private CompanyDao companyDao;
+    @Inject
+    private CompanyMapper companyMapper;
 
     @Transactional
     public Map<Long, Company> addCompanies(Iterable<Row> rows){
@@ -33,15 +37,15 @@ public class CompanyController {
         return map;
     }
 
-    public List<Company> search(String company){
-        return companyDao.search(company);
+    public CompanyDto getById(Long companyId) {
+        return companyMapper.convert(companyDao.findById(companyId));
     }
 
-    public Company getById(Long companyId) {
-        return companyDao.findById(companyId);
+    public List<CompanyDto> getAllCompanies() {
+        return companyMapper.convert(companyDao.getAll());
     }
 
-    public List<Company> getAllCompanies() {
-        return companyDao.getAll();
+    public List<CompanyDto> search(String company){
+        return companyMapper.convert(companyDao.search(company));
     }
 }

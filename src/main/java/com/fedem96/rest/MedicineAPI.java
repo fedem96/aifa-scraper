@@ -20,6 +20,7 @@ public class MedicineAPI {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMedicines(){
+        System.out.println("Getting all medicines");
         List<MedicineDto> medicines = medicineController.getAllMedicines();
         return Response.ok(medicines).build();
     }
@@ -28,6 +29,7 @@ public class MedicineAPI {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMedicine(@PathParam("medicineId") Long medicineId){
+        System.out.println("Getting medicine with id='" + medicineId + "'");
         MedicineDto medicine = medicineController.getById(medicineId);
         return Response.ok(medicine).build();
     }

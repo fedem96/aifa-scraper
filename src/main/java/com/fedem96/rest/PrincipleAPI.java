@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-@Path("principles")
+@Path("{a:principles|activeIngredients}")
 public class PrincipleAPI {
 
     @Inject
@@ -21,6 +21,7 @@ public class PrincipleAPI {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPrinciples(){
+        System.out.println("Getting all principles");
         List<Principle> principles = principleController.getAllPrinciples();
         return Response.ok(principles).build();
     }
@@ -29,6 +30,7 @@ public class PrincipleAPI {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPrinciple(@PathParam("principleId") Long principleId){
+        System.out.println("Getting principle with id='" + principleId +"'");
         Principle principle = principleController.getById(principleId);
         return Response.ok(principle).build();
     }

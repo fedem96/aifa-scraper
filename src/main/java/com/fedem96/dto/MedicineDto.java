@@ -5,8 +5,8 @@ import java.util.List;
 public class MedicineDto extends BaseDto{
     private Long id;
     private String name;
-    private String activePrinciple; // TODO: check var name
-    private List<PackagingDto> packagings;
+    private String activeIngredient;
+    private List<PackagingDto> versions;
 
     public Long getId() {
         return id;
@@ -24,19 +24,19 @@ public class MedicineDto extends BaseDto{
         this.name = name;
     }
 
-    public String getActivePrinciple() {
-        return activePrinciple;
+    public String getActiveIngredient() {
+        return activeIngredient;
     }
 
-    public void setActivePrinciple(String activePrinciple) {
-        this.activePrinciple = activePrinciple;
+    public void setActiveIngredient(String activeIngredient) {
+        this.activeIngredient = activeIngredient;
     }
 
-    public List<PackagingDto> getPackagings() {
-        return packagings;
+    public List<PackagingDto> getVersions() {
+        return versions;
     }
 
-    public void setPackagings(List<PackagingDto> packagings) {
-        this.packagings = packagings;
+    public void setVersions(List<PackagingDto> packagings) {
+        this.versions = packagings;
     }
 }

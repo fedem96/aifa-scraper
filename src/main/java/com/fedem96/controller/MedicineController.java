@@ -43,15 +43,27 @@ public class MedicineController {
         return map;
     }
 
-    public List<Medicine> search(String medicine){
-        return medicineDao.search(medicine);
-    }
-
     public MedicineDto getById(Long medicineId) {
         return medicineMapper.convert(medicineDao.findById(medicineId));
     }
 
     public List<MedicineDto> getAllMedicines() {
         return medicineMapper.convert(medicineDao.getAll());
+    }
+
+    public List<MedicineDto> searchByMedicine(String medicine){
+        return medicineMapper.convert(medicineDao.searchByMedicine(medicine));
+    }
+
+    public List<MedicineDto> searchByCompany(String company){
+        return medicineMapper.convert(medicineDao.searchByCompany(company));
+    }
+
+    public List<MedicineDto> searchByPrinciple(String principle){
+        return medicineMapper.convert(medicineDao.searchByPrinciple(principle));
+    }
+
+    public List<MedicineDto> search(String text){
+        return medicineMapper.convert(medicineDao.search(text));
     }
 }

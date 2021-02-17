@@ -3,9 +3,7 @@ package com.fedem96.rest;
 import com.fedem96.controller.CompanyController;
 import com.fedem96.controller.MedicineController;
 import com.fedem96.controller.PrincipleController;
-import com.fedem96.model.Company;
-import com.fedem96.model.Medicine;
-import com.fedem96.model.Principle;
+import com.fedem96.dto.MedicineDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -16,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-@Path("search")
+@Path("{a:search|medications}")
 public class Searcher {
 
     @Inject
@@ -27,18 +25,32 @@ public class Searcher {
     private CompanyController companyController;
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response search(@QueryParam("medicine") String medicine, @QueryParam("principle") String principle, @QueryParam("company") String company) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response search(@QueryParam("medicine") String medicine, @QueryParam("principle") String principle, @QueryParam("company") String company,
+                           @QueryParam("name") String name, @QueryParam("activeIngredient") String activeIngredient, @QueryParam("text") String text) { // aliases
+        if(medicine == null) medicine = name;
+        if(principle == null) principle = activeIngredient;
         try {
-            if(medicine != null && principle == null && company == null) {
-                List<Medicine> medicines = medicineController.search(medicine);
+            if(medicine == null && principle == null && company == null && text == null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity("no search parameters specified").build();
+            } else if(medicine == null && principle == null && company == null && text != null) {
+                System.out.println("Searching for '" + text + "' in description of medicine, company or principle");
+                List<MedicineDto> medicines = medicineController.search(text);
+                return Response.ok(medicines).build();
+            } else if(medicine != null && principle == null && company == null) {
+                System.out.println("Searching for '" + medicine + "' in description of medicine");
+                List<MedicineDto> medicines = medicineController.searchByMedicine(medicine);
                 return Response.ok(medicines).build();
             } else if(medicine == null && principle != null && company == null) {
-                List<Principle> principles = principleController.search(principle);
-                return Response.ok(principles).build();
+                System.out.println("Searching for '" + principle + "' in description of principle");
+                List<MedicineDto> medicines = medicineController.searchByPrinciple(principle);
+                return Response.ok(medicines).build();
             } else if(medicine == null && principle == null && company != null) {
-                List<Company> companies = companyController.search(company);
-                return Response.ok(companies).build();
+                System.out.println("Searching for '" + company + "' in description of company");
+                List<MedicineDto> medicines = medicineController.searchByCompany(company);
+                return Response.ok(medicines).build();
+            } else {
+                return Response.status(Response.Status.BAD_REQUEST).entity("too many parameters").build();
             }
         } catch (Exception e) {
             e.printStackTrace();

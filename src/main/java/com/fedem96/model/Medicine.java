@@ -2,6 +2,7 @@ package com.fedem96.model;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "medicines")
@@ -13,7 +14,7 @@ public class Medicine extends BaseEntity {
     private String linkFi;
     private String linkRcp;
 
-    @OneToMany(fetch=FetchType.EAGER) // TODO: change FetchType
+    @OneToMany(mappedBy = "medicine")
     private List<Packaging> packagings;
 
     @ManyToOne

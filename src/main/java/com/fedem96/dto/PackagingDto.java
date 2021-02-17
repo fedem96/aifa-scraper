@@ -4,14 +4,15 @@ public class PackagingDto extends BaseDto{
 
     private Long id;
     private String name;
-    private String versionClass; // TODO: what's that?
-    private String type;        // TODO: what's that?
+    private String versionClass;
+    private String type;
     private String description;
     private Float price;
     private String leaflet;
-    private Boolean gluten;   // TODO: check if exists
-    private Boolean lactose;  // TODO: check if exists
+    private Boolean gluten;
+    private Boolean lactose;
     private Long company;
+    private String companyName;
 
     public Long getId() {
         return id;
@@ -91,5 +92,13 @@ public class PackagingDto extends BaseDto{
 
     public void setCompany(Long company) {
         this.company = company;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 }

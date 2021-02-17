@@ -18,8 +18,8 @@ public class MedicineMapper extends BaseMapper<Medicine, MedicineDto> {
         MedicineDto medDto = new MedicineDto();
         medDto.setId(medicine.getId());
         medDto.setName(medicine.getDescription());
-        medDto.setPackagings(packagingMapper.convert(medicine.getPackagings()));
-        medDto.setActivePrinciple(medicine.getPrinciple().getAtc());
+        medDto.setVersions(packagingMapper.convert(medicine.getPackagings()));
+        medDto.setActiveIngredient(medicine.getPrinciple().getDescription());
         return medDto;
     }
 }

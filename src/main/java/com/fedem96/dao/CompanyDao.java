@@ -21,8 +21,9 @@ public class CompanyDao extends BaseDao<Company> {
     }
 
     public List<Company> search(String company) { // TODO: handle max results / pages
+        company = company.toLowerCase();
         return entityManager.createQuery("FROM Company " +
-                "WHERE description LIKE :company")
+                "WHERE LOWER(description) LIKE :company")
                 .setParameter("company", "%" + company + "%")
                 .setMaxResults(10)
                 .getResultList();

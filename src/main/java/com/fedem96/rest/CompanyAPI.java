@@ -1,6 +1,7 @@
 package com.fedem96.rest;
 
 import com.fedem96.controller.CompanyController;
+import com.fedem96.dto.CompanyDto;
 import com.fedem96.model.Company;
 
 import javax.inject.Inject;
@@ -21,7 +22,8 @@ public class CompanyAPI {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCompanies(){
-        List<Company> companies = companyController.getAllCompanies();
+        System.out.println("Getting all companies");
+        List<CompanyDto> companies = companyController.getAllCompanies();
         return Response.ok(companies).build();
     }
 
@@ -29,7 +31,8 @@ public class CompanyAPI {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCompany(@PathParam("companyId") Long companyId){
-        Company company = companyController.getById(companyId);
+        System.out.println("Getting company with id='" + companyId + "'");
+        CompanyDto company = companyController.getById(companyId);
         return Response.ok(company).build();
     }
 }

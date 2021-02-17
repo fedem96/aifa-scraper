@@ -19,14 +19,6 @@ public class PrincipleDao extends BaseDao<Principle> {
         }
     }
 
-    public List<Principle> search(String principle) { // TODO: handle max results / pages
-        return entityManager.createQuery("FROM Principle " +
-                "WHERE description LIKE :principle")
-                .setParameter("principle", "%" + principle + "%")
-                .setMaxResults(10)
-                .getResultList(); // TODO: order
-    }
-
     public List<Principle> getAll() {
         try {
             return entityManager.createQuery("from Principle").getResultList();
@@ -34,5 +26,14 @@ public class PrincipleDao extends BaseDao<Principle> {
         catch (NoResultException nre){
             return null;
         }
+    }
+
+    public List<Principle> search(String principle) { // TODO: handle max results / pages
+        principle = principle.toLowerCase();
+        return entityManager.createQuery("FROM Principle " +
+                "WHERE LOWER(description) LIKE :principle")
+                .setParameter("principle", "%" + principle + "%")
+                .setMaxResults(10)
+                .getResultList(); // TODO: order
     }
 }
