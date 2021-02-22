@@ -17,6 +17,9 @@
 <!--            <property name="hibernate.order_inserts" value="true" />-->
 <!--            <property name="hibernate.order_updates" value="true" />-->
 <!--            <property name="hibernate.id.new_generator_mappings" value="true" />-->
+            <property name="dialect" value="org.hibernate.dialect.MariaDBDialect"/>
+<!--            <property name="connection.url" value="jdbc:mariadb://localhost:3306/aifa_db"/>-->
+            <property name="hibernate.connection.datasource" value="java:global/jdbc/MyDS"/>
         </properties>
     </persistence-unit>
 </persistence>

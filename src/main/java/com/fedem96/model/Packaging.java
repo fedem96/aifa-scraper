@@ -11,6 +11,8 @@ public class Packaging extends BaseEntity {
 
     @Column(unique = true)
     Long aic;
+
+    @Column(length = 1023)
     String description;
     String state;
 

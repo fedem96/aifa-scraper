@@ -22,19 +22,24 @@ public class Scraper {
 
     @PUT
     @Produces(MediaType.TEXT_PLAIN)
-    public Response scrape(@QueryParam("rows") Integer rows, @QueryParam("url") String url, @QueryParam("file") String file) {
+    public Response scrape(@QueryParam("url") String url, @QueryParam("file") String file,
+               @QueryParam("start") Integer start, @QueryParam("pageSize") Integer pageSize, @QueryParam("rows") Integer rows) {
         if(url != null && file != null){
             return Response.serverError().entity("at most one between url and file can be set").build();
         }
+        if(start == null)
+            start = 0;
+        if(pageSize == null)
+            pageSize = rows;
         System.out.println("Scraping");
-        long start = currentTimeMillis();
+        long startingTime = currentTimeMillis();
         try {
             if(file == null)
-                scrapeController.scrapeURL(url, rows);
+                scrapeController.scrapeURL(url, start, pageSize, rows);
             else
-                scrapeController.scrapeFile(file, rows);
+                scrapeController.scrapeFile(file, start, pageSize, rows);
             scrapeController.setLastUpdate();
-            return Response.ok().entity("done in " + ((currentTimeMillis()-start)*0.001) + " seconds").build();
+            return Response.ok().entity("done in " + ((currentTimeMillis()-startingTime)*0.001) + " seconds").build();
         } catch (FileNotFoundException e){
             return Response.serverError().entity("remote service unavailable").build();
         }

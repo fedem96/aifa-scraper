@@ -16,9 +16,7 @@ import java.io.StringReader;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ScrapeController {
 
@@ -34,26 +32,47 @@ public class ScrapeController {
     @Inject
     LastUpdateDao lastUpdateDao;
 
-    public void scrapeURL(String url, Integer maxRows) throws IOException {
-        String csvText = RequestFactory.scrapeFromUrl(url).rows(maxRows).send();
-        processScraped(csvText);
+    private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    private static final String LAST_UPDATE_DATE_TIME_COLUMN = "ds_changed";
+
+    private static final String[] ACTIVE_INGREDIENT_COLUMNS = {"sm_field_codice_atc", "sm_field_descrizione_atc"};
+    private static final String[] COMPANY_COLUMNS = {"sm_field_codice_ditta", "sm_field_descrizione_ditta"};
+    private static final String[] DRUG_COLUMNS = {
+            "sm_field_codice_farmaco", "sm_field_descrizione_farmaco", "sm_field_link_fi", "sm_field_link_rcp",
+            "sm_field_codice_atc", "sm_field_codice_ditta"
+    };
+    private static final String[] PACKAGING_COLUMNS = {"sm_field_aic", "sm_field_descrizione_confezione", "sm_field_stato_farmaco",
+            "sm_field_codice_farmaco"};
+
+
+    public void scrapeURL(String url, int start, int rowsPerPage, int maxRows) throws IOException {
+        Set<String> columns = new HashSet<>();
+        columns.addAll(Arrays.asList(ACTIVE_INGREDIENT_COLUMNS));
+        columns.addAll(Arrays.asList(COMPANY_COLUMNS));
+        columns.addAll(Arrays.asList(DRUG_COLUMNS));
+        columns.addAll(Arrays.asList(PACKAGING_COLUMNS));
+        columns.add(LAST_UPDATE_DATE_TIME_COLUMN);
+        for (int pageStart = start; pageStart < maxRows; pageStart+=rowsPerPage) {
+            String csvText = RequestFactory.scrapeFromUrl(url).columns(columns).start(pageStart).rows(rowsPerPage).send();
+            processScraped(csvText);
+        }
     }
 
-    public void scrapeFile(String file, Integer maxRows) throws IOException {
-        String csvText = RequestFactory.scrapeFromFile(file).rows(maxRows).send();
-        processScraped(csvText);
+    public void scrapeFile(String file, int start, int rowsPerPage, int maxRows) throws IOException {
+        for (int pageStart = start; pageStart < maxRows; pageStart+=rowsPerPage) {
+            String csvText = RequestFactory.scrapeFromFile(file).start(pageStart).rows(rowsPerPage).send();
+            processScraped(csvText);
+        }
     }
 
     private void processScraped(String csvText) throws IOException {
-        Table table = textToTable(csvText, "yyyy-MM-dd'T'HH:mm:ss'Z'");
-        table = dropOldRecords(table, "ds_last_comment_or_change");
+        Table table = textToTable(csvText, DATE_TIME_PATTERN);
+        table = dropOldRecords(table, LAST_UPDATE_DATE_TIME_COLUMN);
 
-        Table tabMedicines = table.select("sm_field_codice_farmaco", "sm_field_descrizione_farmaco", "sm_field_link_fi", "sm_field_link_rcp",
-                "sm_field_codice_atc", "sm_field_codice_ditta", "ds_last_comment_or_change").dropDuplicateRows(); // TODO: handle missing values
-        Table tabCompanies = table.select("sm_field_codice_ditta", "sm_field_descrizione_ditta").dropDuplicateRows();
-        Table tabPrinciples = table.select("sm_field_codice_atc", "sm_field_descrizione_atc").dropDuplicateRows();
-        Table tabPackagings = table.select("sm_field_aic", "sm_field_descrizione_confezione", "sm_field_stato_farmaco",
-                "sm_field_codice_farmaco").dropDuplicateRows();
+        Table tabMedicines = table.select(DRUG_COLUMNS).dropDuplicateRows(); // TODO: handle missing values
+        Table tabCompanies = table.select(COMPANY_COLUMNS).dropDuplicateRows();
+        Table tabPrinciples = table.select(ACTIVE_INGREDIENT_COLUMNS).dropDuplicateRows();
+        Table tabPackagings = table.select(PACKAGING_COLUMNS).dropDuplicateRows();
 
         int maxPerTransaction = 1000;
         Map<Long, Company> mapCompanies = addCompanies(tabCompanies, maxPerTransaction);
@@ -72,6 +91,7 @@ public class ScrapeController {
         return table.where(date.isOnOrAfter(lastUpdate));
     }
 
+    // TODO: no transactional in this class
     @Transactional
     private LocalDate getLastUpdateDate(){
         return lastUpdateDao.findSingleton().getLastUpdateDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();

@@ -30,13 +30,21 @@ public class MedicineController {
             Medicine medicine = medicineDao.findByCode(code);
             if(medicine == null){
                 medicine = ModelFactory.medicine();
+                medicine.setPrinciple(mapPrinciples.get(row.getString("sm_field_codice_atc")));
+            } else {
+                Principle newPrinciple = mapPrinciples.get(row.getString("sm_field_codice_atc"));
+                String oldATC = medicine.getPrinciple().getAtc();
+                if(oldATC == null || oldATC.length() < newPrinciple.getAtc().length()) { // if new ATC is more specific
+                    medicine.setPrinciple(newPrinciple);
+                    if(!oldATC.equals(newPrinciple.getAtc().substring(0, oldATC.length())))
+                        System.err.println("Longer ATC but not more specific. Old: '" + oldATC + "'. New: '" + newPrinciple.getAtc());
+                }
             }
             medicine.setCode(code);
             medicine.setDescription(row.getString("sm_field_descrizione_farmaco"));
             medicine.setLinkFi(row.getString("sm_field_link_fi"));
             medicine.setLinkRcp(row.getString("sm_field_link_rcp"));
             medicine.setCompany(mapCompanies.get((long) row.getInt("sm_field_codice_ditta")));
-            medicine.setPrinciple(mapPrinciples.get(row.getString("sm_field_codice_atc")));
             medicineDao.save(medicine);
             map.put(code, medicine);
         }
