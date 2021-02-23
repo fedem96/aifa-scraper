@@ -2,7 +2,7 @@ package com.fedem96.dto;
 
 import java.util.List;
 
-public class MedicineDto extends BaseDto{
+public class DrugDto extends BaseDto{
     private Long id;
     private String name;
     private String activeIngredient;

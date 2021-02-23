@@ -2,7 +2,6 @@ package com.fedem96.rest;
 
 import com.fedem96.controller.CompanyController;
 import com.fedem96.dto.CompanyDto;
-import com.fedem96.model.Company;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;

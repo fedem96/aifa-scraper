@@ -8,7 +8,7 @@ import javax.persistence.Table;
 @Table(name = "companies")
 public class Company extends BaseEntity {
 
-    @Column(unique = true)
+    @Column(unique = true, length = 31)
     Long code;
     String description;
 

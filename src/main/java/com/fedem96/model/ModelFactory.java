@@ -11,16 +11,16 @@ public class ModelFactory {
         return new Company(UUID.randomUUID().toString());
     }
 
-    public static Medicine medicine() {
-        return new Medicine(UUID.randomUUID().toString());
+    public static Drug drug() {
+        return new Drug(UUID.randomUUID().toString());
     }
 
     public static Packaging packaging() {
         return new Packaging(UUID.randomUUID().toString());
     }
 
-    public static Principle principle() {
-        return new Principle(UUID.randomUUID().toString());
+    public static ActiveIngredient activeIngredient() {
+        return new ActiveIngredient(UUID.randomUUID().toString());
     }
 
     public static LastUpdate lastUpdate() {

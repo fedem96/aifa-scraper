@@ -9,26 +9,26 @@ import javax.persistence.Table;
 @Table(name = "packagings")
 public class Packaging extends BaseEntity {
 
-    @Column(unique = true)
-    Long aic;
+    @Column(unique = true, length = 31)
+    String aic;
 
     @Column(length = 1023)
     String description;
     String state;
 
     @ManyToOne(optional = false)
-    private Medicine medicine;
+    private Drug drug;
 
     protected Packaging() {}
     public Packaging(String uuid) {
         super(uuid);
     }
 
-    public Long getAic() {
+    public String getAic() {
         return aic;
     }
 
-    public void setAic(Long aic) {
+    public void setAic(String aic) {
         this.aic = aic;
     }
 
@@ -48,11 +48,11 @@ public class Packaging extends BaseEntity {
         this.state = state;
     }
 
-    public Medicine getMedicine() {
-        return medicine;
+    public Drug getDrug() {
+        return drug;
     }
 
-    public void setMedicine(Medicine medicine) {
-        this.medicine = medicine;
+    public void setDrug(Drug drug) {
+        this.drug = drug;
     }
 }

@@ -1,7 +1,7 @@
 package com.fedem96.controller;
 
 import com.fedem96.dao.PackagingDao;
-import com.fedem96.model.Medicine;
+import com.fedem96.model.Drug;
 import com.fedem96.model.ModelFactory;
 import com.fedem96.model.Packaging;
 import tech.tablesaw.api.Row;
@@ -16,10 +16,10 @@ public class PackagingController {
     PackagingDao packagingDao;
 
     @Transactional
-    public Map<Long, Packaging> addPackagings(Iterable<Row> rows, Map<Long, Medicine> medicinesMap){
-        Map<Long, Packaging> map = new HashMap<>();
+    public Map<String, Packaging> addPackagings(Iterable<Row> rows, Map<Long, Drug> drugsMap){
+        Map<String, Packaging> map = new HashMap<>();
         for (Row row: rows){
-            long aic = row.getInt("sm_field_aic");
+            String aic = row.getString("sm_field_aic");
             Packaging packaging = packagingDao.findByAic(aic);
             if(packaging == null){
                 packaging = ModelFactory.packaging();
@@ -27,7 +27,7 @@ public class PackagingController {
             packaging.setAic(aic);
             packaging.setDescription(row.getString("sm_field_descrizione_confezione"));
             packaging.setState(row.getString("sm_field_stato_farmaco"));
-            packaging.setMedicine(medicinesMap.get((long) row.getInt("sm_field_codice_farmaco")));
+            packaging.setDrug(drugsMap.get((long) row.getInt("sm_field_codice_farmaco")));
             packagingDao.save(packaging);
             map.put(aic, packaging);
         }

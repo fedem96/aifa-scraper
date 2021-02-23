@@ -23,11 +23,11 @@ public class ScrapeController {
     @Inject
     CompanyController companyController;
     @Inject
-    MedicineController medicineController;
+    DrugController drugController;
     @Inject
     PackagingController packagingController;
     @Inject
-    PrincipleController principleController;
+    ActiveIngredientController activeIngredientController;
 
     @Inject
     LastUpdateDao lastUpdateDao;
@@ -69,16 +69,16 @@ public class ScrapeController {
         Table table = textToTable(csvText, DATE_TIME_PATTERN);
         table = dropOldRecords(table, LAST_UPDATE_DATE_TIME_COLUMN);
 
-        Table tabMedicines = table.select(DRUG_COLUMNS).dropDuplicateRows(); // TODO: handle missing values
+        Table tabDrugs = table.select(DRUG_COLUMNS).dropDuplicateRows(); // TODO: handle missing values
         Table tabCompanies = table.select(COMPANY_COLUMNS).dropDuplicateRows();
-        Table tabPrinciples = table.select(ACTIVE_INGREDIENT_COLUMNS).dropDuplicateRows();
+        Table tabActiveIngredients = table.select(ACTIVE_INGREDIENT_COLUMNS).dropDuplicateRows();
         Table tabPackagings = table.select(PACKAGING_COLUMNS).dropDuplicateRows();
 
         int maxPerTransaction = 1000;
         Map<Long, Company> mapCompanies = addCompanies(tabCompanies, maxPerTransaction);
-        Map<String, Principle> mapPrinciples = addPrinciples(tabPrinciples, maxPerTransaction);
-        Map<Long, Medicine> medicinesMap = addMedicines(tabMedicines, mapCompanies, mapPrinciples, maxPerTransaction);
-        addPackagings(tabPackagings, medicinesMap, maxPerTransaction);
+        Map<String, ActiveIngredient> mapActiveIngredients = addActiveIngredients(tabActiveIngredients, maxPerTransaction);
+        Map<Long, Drug> drugsMap = addDrugs(tabDrugs, mapCompanies, mapActiveIngredients, maxPerTransaction);
+        addPackagings(tabPackagings, drugsMap, maxPerTransaction);
     }
 
     private Table textToTable(String csvText, String dateTimePattern) throws IOException {
@@ -116,36 +116,36 @@ public class ScrapeController {
         return companiesMap;
     }
 
-    public Map<Long, Medicine> addMedicines(Table tab, Map<Long, Company> mapCompanies, Map<String, Principle> mapPrinciples, int maxPerTransaction){
-        Map<Long, Medicine> medicinesMap = new HashMap<>();
+    public Map<Long, Drug> addDrugs(Table tab, Map<Long, Company> mapCompanies, Map<String, ActiveIngredient> mapActiveIngredients, int maxPerTransaction){
+        Map<Long, Drug> drugsMap = new HashMap<>();
         int numRows = tab.rowCount();
         for(int index = 0; index < numRows; index += maxPerTransaction) {
             TableSlice ts = new TableSlice(tab, Selection.withRange(index, Math.min(index+maxPerTransaction, numRows)));
-            Map<Long, Medicine> addedMedicinesMap = medicineController.addMedicines(ts, mapCompanies, mapPrinciples);
-            medicinesMap.putAll(addedMedicinesMap);
+            Map<Long, Drug> addedDrugsMap = drugController.addDrugs(ts, mapCompanies, mapActiveIngredients);
+            drugsMap.putAll(addedDrugsMap);
         }
-        return medicinesMap;
+        return drugsMap;
     }
 
-    public Map<Long, Packaging> addPackagings(Table tab, Map<Long, Medicine> mapMedicines, int maxPerTransaction){
-        Map<Long, Packaging> packagingsMap = new HashMap<>();
+    public Map<String, Packaging> addPackagings(Table tab, Map<Long, Drug> mapDrugs, int maxPerTransaction){
+        Map<String, Packaging> packagingsMap = new HashMap<>();
         int numRows = tab.rowCount();
         for(int index = 0; index < numRows; index += maxPerTransaction) {
             TableSlice ts = new TableSlice(tab, Selection.withRange(index, Math.min(index+maxPerTransaction, numRows)));
-            Map<Long, Packaging> addedPackagingsMap = packagingController.addPackagings(ts, mapMedicines);
+            Map<String, Packaging> addedPackagingsMap = packagingController.addPackagings(ts, mapDrugs);
             packagingsMap.putAll(addedPackagingsMap);
         }
         return packagingsMap;
     }
 
-    public Map<String, Principle> addPrinciples(Table tab, int maxPerTransaction){
-        Map<String, Principle> principlesMap = new HashMap<>();
+    public Map<String, ActiveIngredient> addActiveIngredients(Table tab, int maxPerTransaction){
+        Map<String, ActiveIngredient> activeIngredientsMap = new HashMap<>();
         int numRows = tab.rowCount();
         for(int index = 0; index < numRows; index += maxPerTransaction) {
             TableSlice ts = new TableSlice(tab, Selection.withRange(index, Math.min(index+maxPerTransaction, numRows)));
-            Map<String, Principle> addedPrinciplesMap = principleController.addPrinciples(ts);
-            principlesMap.putAll(addedPrinciplesMap);
+            Map<String, ActiveIngredient> addedActiveIngredientsMap = activeIngredientController.addActiveIngredients(ts);
+            activeIngredientsMap.putAll(addedActiveIngredientsMap);
         }
-        return principlesMap;
+        return activeIngredientsMap;
     }
 }

@@ -5,15 +5,15 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "principles")
-public class Principle extends BaseEntity {
+@Table(name = "activeIngredients")
+public class ActiveIngredient extends BaseEntity {
 
     @Column(unique = true)
     String atc;
     String description;
 
-    protected Principle() {}
-    public Principle(String uuid) {
+    protected ActiveIngredient() {}
+    public ActiveIngredient(String uuid) {
         super(uuid);
     }
 

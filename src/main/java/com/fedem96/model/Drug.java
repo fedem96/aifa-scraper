@@ -2,29 +2,32 @@ package com.fedem96.model;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Entity
-@Table(name = "medicines")
-public class Medicine extends BaseEntity {
+@Table(name = "drugs")
+public class Drug extends BaseEntity {
 
     @Column(unique = true)
     private Long code;
     private String description;
+
+    @Column(length = 255)
     private String linkFi;
+
+    @Column(length = 255)
     private String linkRcp;
 
-    @OneToMany(mappedBy = "medicine")
+    @OneToMany(mappedBy = "drug")
     private List<Packaging> packagings;
 
     @ManyToOne
     private Company company;
 
     @ManyToOne
-    private Principle principle;
+    private ActiveIngredient activeIngredient;
 
-    protected Medicine() {}
-    public Medicine(String uuid) {
+    protected Drug() {}
+    public Drug(String uuid) {
         super(uuid);
     }
 
@@ -68,12 +71,12 @@ public class Medicine extends BaseEntity {
         this.company = company;
     }
 
-    public Principle getPrinciple() {
-        return principle;
+    public ActiveIngredient getActiveIngredient() {
+        return activeIngredient;
     }
 
-    public void setPrinciple(Principle principle) {
-        this.principle = principle;
+    public void setActiveIngredient(ActiveIngredient activeIngredient) {
+        this.activeIngredient = activeIngredient;
     }
 
     public List<Packaging> getPackagings() {
