@@ -19,7 +19,7 @@ public class PackagingController {
     public Map<String, Packaging> addPackagings(Iterable<Row> rows, Map<Long, Drug> drugsMap){
         Map<String, Packaging> map = new HashMap<>();
         for (Row row: rows){
-            String aic = row.getString("sm_field_aic");
+            String aic = "" + row.getInt("sm_field_aic");
             Packaging packaging = packagingDao.findByAic(aic);
             if(packaging == null){
                 packaging = ModelFactory.packaging();

@@ -6,4 +6,14 @@
 
     <display-name>Restful Web Application</display-name>
 
+    <data-source>
+        <name>java:jdbc/datasources/AifaDB</name>
+        <class-name>org.mariadb.jdbc.MariaDbDataSource</class-name>
+        <server-name>localhost</server-name>
+        <port-number>3306</port-number>
+        <database-name>aifa_db</database-name>
+        <user>root</user>
+        <password></password>
+    </data-source>
+
 </web-app>

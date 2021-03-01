@@ -3,23 +3,14 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
              version="2.2">
-    <persistence-unit name="my">
 
-<!--        <jta-data-source>java:jboss/MariaDBDS</jta-data-source>-->
+    <persistence-unit name="aifaPU" transaction-type="JTA">
+        <jta-data-source>java:jdbc/datasources/AifaDB</jta-data-source>
         <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDBDialect" />
             <property name="hibernate.hbm2ddl.auto" value="update"/>
-<!--            <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDBDialect" />-->
             <property name="hibernate.show_sql" value="true"/>
-<!--            <property name="hibernate.format_sql" value="true" />-->
-<!--            <property name="hibernate.use_sql_comments" value="true" />-->
-<!--            <property name="hibernate.default_batch_fetch_size" value="16" />-->
-<!--            <property name="hibernate.jdbc.batch_size" value="100" />-->
-<!--            <property name="hibernate.order_inserts" value="true" />-->
-<!--            <property name="hibernate.order_updates" value="true" />-->
-<!--            <property name="hibernate.id.new_generator_mappings" value="true" />-->
-            <property name="dialect" value="org.hibernate.dialect.MariaDBDialect"/>
-<!--            <property name="connection.url" value="jdbc:mariadb://localhost:3306/aifa_db"/>-->
-            <property name="hibernate.connection.datasource" value="java:global/jdbc/MyDS"/>
         </properties>
     </persistence-unit>
+
 </persistence>

@@ -37,7 +37,7 @@ public class DrugController {
                 if(oldATC == null || oldATC.length() < newActiveIngredient.getAtc().length()) { // if new ATC is more specific
                     drug.setActiveIngredient(newActiveIngredient);
                     if(!oldATC.equals(newActiveIngredient.getAtc().substring(0, oldATC.length())))
-                        System.err.println("Longer ATC but not more specific. Old: '" + oldATC + "'. New: '" + newActiveIngredient.getAtc());
+                        System.err.println("Longer ATC but not more specific. Old: '" + oldATC + "'. New: '" + newActiveIngredient.getAtc() + "'");
                 }
             }
             drug.setCode(code);

@@ -30,8 +30,8 @@ public class DrugDao extends BaseDao<Drug> {
 
     public List<Drug> searchByDrug(String drug) { // TODO: handle max results / pages
         drug = drug.toLowerCase();
-        return entityManager.createQuery("FROM Drug d LEFT JOIN FETCH m.packagings " +
-                "WHERE LOWER(m.description) LIKE :drug")
+        return entityManager.createQuery("FROM Drug d LEFT JOIN FETCH d.packagings " +
+                "WHERE LOWER(d.description) LIKE :drug")
                 .setParameter("drug", "%" + drug + "%")
                 .setMaxResults(10)
                 .getResultList();
@@ -39,8 +39,8 @@ public class DrugDao extends BaseDao<Drug> {
 
     public List<Drug> searchByCompany(String company) {
         company = company.toLowerCase();
-        return entityManager.createQuery("FROM Drug d LEFT JOIN FETCH m.packagings " +
-                "WHERE LOWER(m.company.description) LIKE :company")
+        return entityManager.createQuery("FROM Drug d LEFT JOIN FETCH d.packagings " +
+                "WHERE LOWER(d.company.description) LIKE :company")
                 .setParameter("company", "%" + company + "%")
                 .setMaxResults(10)
                 .getResultList();
@@ -48,8 +48,8 @@ public class DrugDao extends BaseDao<Drug> {
 
     public List<Drug> searchByActiveIngredient(String activeIngredient) {
         activeIngredient = activeIngredient.toLowerCase();
-        return entityManager.createQuery("FROM Drug d LEFT JOIN FETCH m.packagings " +
-                "WHERE LOWER(m.activeIngredient.description) LIKE :activeIngredient")
+        return entityManager.createQuery("FROM Drug d LEFT JOIN FETCH d.packagings " +
+                "WHERE LOWER(d.activeIngredient.description) LIKE :activeIngredient")
                 .setParameter("activeIngredient", "%" + activeIngredient + "%")
                 .setMaxResults(10)
                 .getResultList();
@@ -57,8 +57,8 @@ public class DrugDao extends BaseDao<Drug> {
 
     public List<Drug> search(String text) { // TODO: handle max results / pages
         text = text.toLowerCase();
-        return entityManager.createQuery("FROM Drug d LEFT JOIN FETCH m.packagings " +
-                "WHERE LOWER(m.description) LIKE :text OR LOWER(m.company.description) LIKE :text OR LOWER(m.activeIngredient.description) LIKE :text")
+        return entityManager.createQuery("FROM Drug d LEFT JOIN FETCH d.packagings " +
+                "WHERE LOWER(d.description) LIKE :text OR LOWER(d.company.description) LIKE :text OR LOWER(d.activeIngredient.description) LIKE :text")
                 .setParameter("text", "%" + text + "%")
                 .setMaxResults(10)
                 .getResultList();

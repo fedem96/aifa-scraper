@@ -3,7 +3,9 @@ package com.fedem96.controller;
 import com.fedem96.dao.LastUpdateDao;
 import com.fedem96.model.*;
 import com.fedem96.requester.RequestFactory;
+import org.apache.commons.text.StringEscapeUtils;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.selection.Selection;
@@ -73,6 +75,12 @@ public class ScrapeController {
         Table tabCompanies = table.select(COMPANY_COLUMNS).dropDuplicateRows();
         Table tabActiveIngredients = table.select(ACTIVE_INGREDIENT_COLUMNS).dropDuplicateRows();
         Table tabPackagings = table.select(PACKAGING_COLUMNS).dropDuplicateRows();
+
+        for (String colName : new String[]{"sm_field_link_fi", "sm_field_link_rcp"}) {
+            StringColumn newCol = tabDrugs.stringColumn(colName).map(StringEscapeUtils::unescapeHtml4);
+            tabDrugs.removeColumns(colName);
+            tabDrugs.addColumns(newCol);
+        }
 
         int maxPerTransaction = 1000;
         Map<Long, Company> mapCompanies = addCompanies(tabCompanies, maxPerTransaction);
