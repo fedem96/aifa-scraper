@@ -1,0 +1,33 @@
+version: "3.7"
+
+
+services:
+
+  server:
+    container_name: "aifa-scraper_server_container"
+    build:
+      context: .
+    depends_on:
+      - db
+    networks:
+      - aifa-scraper-network
+    ports:
+      - "8080:8080" # application
+      - "9990:9990" # admin console
+      - "5005:5005" # debug port
+
+  db:
+    container_name: "aifa-scraper_db_container"
+    image: "mariadb:10.5.8"
+    environment:
+      - MYSQL_DATABASE=aifa_db
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+    networks:
+      - aifa-scraper-network
+    ports:
+      - "3306:3306"
+
+
+networks:
+  aifa-scraper-network:
+    name: aifa-scraper-network
