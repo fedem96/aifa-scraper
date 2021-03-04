@@ -3,12 +3,12 @@ version: "3.7"
 
 services:
 
-  server:
-    container_name: "aifa-scraper_server_container"
+  jeeserver-service:
+    container_name: "aifa-scraper_jeeserver_container"
     build:
       context: .
     depends_on:
-      - db
+      - aifadb-service
     networks:
       - aifa-scraper-network
     ports:
@@ -16,7 +16,7 @@ services:
       - "9990:9990" # admin console
       - "5005:5005" # debug port
 
-  db:
+  aifadb-service:
     container_name: "aifa-scraper_db_container"
     image: "mariadb:10.5.8"
     environment:

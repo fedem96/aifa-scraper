@@ -9,7 +9,7 @@
     <data-source>
         <name>java:jdbc/datasources/AifaDB</name>
         <class-name>org.mariadb.jdbc.MariaDbDataSource</class-name>
-        <server-name>aifa-scraper_db</server-name>
+        <server-name>aifadb-service</server-name>
         <port-number>3306</port-number>
         <database-name>aifa_db</database-name>
         <user>root</user>
