@@ -3,10 +3,7 @@ package com.fedem96.rest;
 import com.fedem96.controller.ScrapeController;
 
 import javax.inject.Inject;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.FileNotFoundException;
@@ -23,7 +20,8 @@ public class Scraper {
     @PUT
     @Produces(MediaType.TEXT_PLAIN)
     public Response scrape(@QueryParam("url") String url, @QueryParam("file") String file,
-               @QueryParam("start") Integer start, @QueryParam("pageSize") Integer pageSize, @QueryParam("rows") Integer rows) {
+               @QueryParam("start") Integer start, @QueryParam("pageSize") Integer pageSize, @QueryParam("rows") Integer rows,
+               @QueryParam("checkLastUpdate") @DefaultValue("false") boolean checkLastUpdate, @QueryParam("year") Integer year) {
         if(url != null && file != null){
             return Response.serverError().entity("at most one between url and file can be set").build();
         }
@@ -35,9 +33,9 @@ public class Scraper {
         long startingTime = currentTimeMillis();
         try {
             if(file == null)
-                scrapeController.scrapeURL(url, start, pageSize, rows);
+                scrapeController.scrapeURL(url, start, pageSize, rows, year, checkLastUpdate);
             else
-                scrapeController.scrapeFile(file, start, pageSize, rows);
+                scrapeController.scrapeFile(file, start, pageSize, rows, checkLastUpdate);
             scrapeController.setLastUpdate();
             return Response.ok().entity("done in " + ((currentTimeMillis()-startingTime)*0.001) + " seconds").build();
         } catch (FileNotFoundException e){

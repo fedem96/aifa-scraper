@@ -10,12 +10,14 @@ public class Request {
 
     private Map<String, String> parameters;
     private Map<String, String> queryOnParam;
+    private String genericQuery;
 
     private Requester requester;
 
     public Request(){
         parameters = new HashMap<>();
         queryOnParam = new HashMap<>();
+        genericQuery = null;
     }
 
     public Request setRequester(Requester requester) {
@@ -36,8 +38,14 @@ public class Request {
         return this;
     }
 
+    public Request year(Integer year) {
+        if(year != null)
+            this.query(year);
+        return this;
+    }
+
     public Request columns(Collection<String> columns) {
-        parameters.put("fl", columns.stream().collect(Collectors.joining(",")));
+        parameters.put("fl", String.join(",", columns));
         return this;
     }
 
@@ -57,20 +65,20 @@ public class Request {
         return this;
     }
 
-    public <T> Request paramQuery(String param, T query){
+    public Request query(Object query){
+        if(genericQuery != null)
+            throw new UnsupportedOperationException("Generic query already set");
+        genericQuery = query.toString();
+        return this;
+    }
+
+    public Request paramQuery(String param, Object query){
         queryOnParam.put(param, query.toString());
         return this;
     }
 
     public String send() throws IOException {
         parameters.put("q", queryOnParam.entrySet().stream().map(pair -> pair.getKey() + ":" + pair.getValue()).collect(Collectors.joining("+")));
-        return requester.sendRequest(parameters);
-    }
-
-    public String send(String query) throws IOException {
-        if(queryOnParam.size() > 0)
-            System.err.println("WARNING: when you specify the global query, you can't use parameter-specific queries");
-        parameters.put("q", query);
         return requester.sendRequest(parameters);
     }
 
