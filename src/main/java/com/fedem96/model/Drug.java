@@ -23,9 +23,6 @@ public class Drug extends BaseEntity {
     @ManyToOne
     private Company company;
 
-    @ManyToOne
-    private ActiveIngredient activeIngredient;
-
     protected Drug() {}
     public Drug(String uuid) {
         super(uuid);
@@ -69,14 +66,6 @@ public class Drug extends BaseEntity {
 
     public void setCompany(Company company) {
         this.company = company;
-    }
-
-    public ActiveIngredient getActiveIngredient() {
-        return activeIngredient;
-    }
-
-    public void setActiveIngredient(ActiveIngredient activeIngredient) {
-        this.activeIngredient = activeIngredient;
     }
 
     public List<Packaging> getPackagings() {

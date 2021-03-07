@@ -41,10 +41,10 @@ public class ScrapeController {
     private static final String[] COMPANY_COLUMNS = {"sm_field_codice_ditta", "sm_field_descrizione_ditta"};
     private static final String[] DRUG_COLUMNS = {
             "sm_field_codice_farmaco", "sm_field_descrizione_farmaco", "sm_field_link_fi", "sm_field_link_rcp",
-            "sm_field_codice_atc", "sm_field_codice_ditta"
+            "sm_field_codice_ditta"
     };
     private static final String[] PACKAGING_COLUMNS = {"sm_field_aic", "sm_field_descrizione_confezione", "sm_field_stato_farmaco",
-            "sm_field_codice_farmaco"};
+            "sm_field_codice_farmaco", "sm_field_codice_atc"};
 
 
     public void scrapeURL(String url, int start, int rowsPerPage, int maxRows, Integer year, boolean checkLastUpdate) throws IOException {
@@ -89,8 +89,8 @@ public class ScrapeController {
         int maxPerTransaction = 1000;
         Map<Long, Company> mapCompanies = addCompanies(tabCompanies, maxPerTransaction);
         Map<String, ActiveIngredient> mapActiveIngredients = addActiveIngredients(tabActiveIngredients, maxPerTransaction);
-        Map<Long, Drug> drugsMap = addDrugs(tabDrugs, mapCompanies, mapActiveIngredients, maxPerTransaction);
-        addPackagings(tabPackagings, drugsMap, maxPerTransaction);
+        Map<Long, Drug> drugsMap = addDrugs(tabDrugs, mapCompanies, maxPerTransaction);
+        addPackagings(tabPackagings, drugsMap, mapActiveIngredients, maxPerTransaction);
     }
 
     private Table textToTable(String csvText, String dateTimePattern) throws IOException {
@@ -128,23 +128,23 @@ public class ScrapeController {
         return companiesMap;
     }
 
-    public Map<Long, Drug> addDrugs(Table tab, Map<Long, Company> mapCompanies, Map<String, ActiveIngredient> mapActiveIngredients, int maxPerTransaction){
+    public Map<Long, Drug> addDrugs(Table tab, Map<Long, Company> mapCompanies, int maxPerTransaction){
         Map<Long, Drug> drugsMap = new HashMap<>();
         int numRows = tab.rowCount();
         for(int index = 0; index < numRows; index += maxPerTransaction) {
             TableSlice ts = new TableSlice(tab, Selection.withRange(index, Math.min(index+maxPerTransaction, numRows)));
-            Map<Long, Drug> addedDrugsMap = drugController.addDrugs(ts, mapCompanies, mapActiveIngredients);
+            Map<Long, Drug> addedDrugsMap = drugController.addDrugs(ts, mapCompanies);
             drugsMap.putAll(addedDrugsMap);
         }
         return drugsMap;
     }
 
-    public Map<String, Packaging> addPackagings(Table tab, Map<Long, Drug> mapDrugs, int maxPerTransaction){
+    public Map<String, Packaging> addPackagings(Table tab, Map<Long, Drug> mapDrugs, Map<String, ActiveIngredient> mapActiveIngredients, int maxPerTransaction){
         Map<String, Packaging> packagingsMap = new HashMap<>();
         int numRows = tab.rowCount();
         for(int index = 0; index < numRows; index += maxPerTransaction) {
             TableSlice ts = new TableSlice(tab, Selection.withRange(index, Math.min(index+maxPerTransaction, numRows)));
-            Map<String, Packaging> addedPackagingsMap = packagingController.addPackagings(ts, mapDrugs);
+            Map<String, Packaging> addedPackagingsMap = packagingController.addPackagings(ts, mapDrugs, mapActiveIngredients);
             packagingsMap.putAll(addedPackagingsMap);
         }
         return packagingsMap;

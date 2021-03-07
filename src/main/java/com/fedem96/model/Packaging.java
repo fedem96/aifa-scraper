@@ -16,6 +16,9 @@ public class Packaging extends BaseEntity {
     String description;
     String state;
 
+    @ManyToOne
+    private ActiveIngredient activeIngredient;
+
     @ManyToOne(optional = false)
     private Drug drug;
 
@@ -46,6 +49,14 @@ public class Packaging extends BaseEntity {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public ActiveIngredient getActiveIngredient() {
+        return activeIngredient;
+    }
+
+    public void setActiveIngredient(ActiveIngredient activeIngredient) {
+        this.activeIngredient = activeIngredient;
     }
 
     public Drug getDrug() {
