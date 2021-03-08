@@ -4,6 +4,9 @@ import com.fedem96.model.LastUpdate;
 import com.fedem96.model.ModelFactory;
 
 import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class LastUpdateDao extends BaseDao<LastUpdate> {
@@ -22,4 +25,18 @@ public class LastUpdateDao extends BaseDao<LastUpdate> {
             return lu;
         }
     }
+
+    public LocalDate getLastUpdateDate(){
+        return this.findSingleton().getLastUpdateDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    @Transactional
+    public void setLastUpdate(){
+        LastUpdate lu = this.findSingleton();
+        lu.setLastUpdateDate(new Date());
+        this.save(lu);
+    }
+
+
+
 }

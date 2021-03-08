@@ -1,24 +1,25 @@
 package com.fedem96.controller;
 
 import com.fedem96.dao.LastUpdateDao;
-import com.fedem96.model.*;
+import com.fedem96.model.ActiveIngredient;
+import com.fedem96.model.Company;
+import com.fedem96.model.Drug;
 import com.fedem96.requester.RequestFactory;
 import org.apache.commons.text.StringEscapeUtils;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
-import tech.tablesaw.selection.Selection;
-import tech.tablesaw.table.TableSlice;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.StringReader;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class ScrapeController {
 
@@ -87,10 +88,10 @@ public class ScrapeController {
         Table tabPackagings = table.select(PACKAGING_COLUMNS).dropDuplicateRows();
 
         int maxPerTransaction = 1000;
-        Map<Long, Company> mapCompanies = addCompanies(tabCompanies, maxPerTransaction);
-        Map<String, ActiveIngredient> mapActiveIngredients = addActiveIngredients(tabActiveIngredients, maxPerTransaction);
-        Map<Long, Drug> drugsMap = addDrugs(tabDrugs, mapCompanies, maxPerTransaction);
-        addPackagings(tabPackagings, drugsMap, mapActiveIngredients, maxPerTransaction);
+        Map<Long, Company> mapCompanies = companyController.addCompanies(tabCompanies, maxPerTransaction);
+        Map<String, ActiveIngredient> mapActiveIngredients = activeIngredientController.addActiveIngredients(tabActiveIngredients, maxPerTransaction);
+        Map<Long, Drug> drugsMap = drugController.addDrugs(tabDrugs, mapCompanies, maxPerTransaction);
+        packagingController.addPackagings(tabPackagings, drugsMap, mapActiveIngredients, maxPerTransaction);
     }
 
     private Table textToTable(String csvText, String dateTimePattern) throws IOException {
@@ -99,65 +100,11 @@ public class ScrapeController {
 
     private Table dropOldRecords(Table table, String dateColumn){
         DateTimeColumn date = table.dateTimeColumn(dateColumn);
-        LocalDate lastUpdate = getLastUpdateDate();
+        LocalDate lastUpdate = lastUpdateDao.getLastUpdateDate();
         return table.where(date.isOnOrAfter(lastUpdate));
     }
 
-    // TODO: no transactional in this class
-    @Transactional
-    private LocalDate getLastUpdateDate(){
-        return lastUpdateDao.findSingleton().getLastUpdateDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-    }
-
-    @Transactional
-    public void setLastUpdate(){
-        LastUpdate lu = lastUpdateDao.findSingleton();
-        lu.setLastUpdateDate(new Date());
-        lastUpdateDao.save(lu);
-    }
-
-
-    public Map<Long, Company> addCompanies(Table tab, int maxPerTransaction){
-        Map<Long, Company> companiesMap = new HashMap<>();
-        int numRows = tab.rowCount();
-        for(int index = 0; index < numRows; index += maxPerTransaction) {
-            TableSlice ts = new TableSlice(tab, Selection.withRange(index, Math.min(index+maxPerTransaction, numRows)));
-            Map<Long, Company> addedCompaniesMap = companyController.addCompanies(ts);
-            companiesMap.putAll(addedCompaniesMap);
-        }
-        return companiesMap;
-    }
-
-    public Map<Long, Drug> addDrugs(Table tab, Map<Long, Company> mapCompanies, int maxPerTransaction){
-        Map<Long, Drug> drugsMap = new HashMap<>();
-        int numRows = tab.rowCount();
-        for(int index = 0; index < numRows; index += maxPerTransaction) {
-            TableSlice ts = new TableSlice(tab, Selection.withRange(index, Math.min(index+maxPerTransaction, numRows)));
-            Map<Long, Drug> addedDrugsMap = drugController.addDrugs(ts, mapCompanies);
-            drugsMap.putAll(addedDrugsMap);
-        }
-        return drugsMap;
-    }
-
-    public Map<String, Packaging> addPackagings(Table tab, Map<Long, Drug> mapDrugs, Map<String, ActiveIngredient> mapActiveIngredients, int maxPerTransaction){
-        Map<String, Packaging> packagingsMap = new HashMap<>();
-        int numRows = tab.rowCount();
-        for(int index = 0; index < numRows; index += maxPerTransaction) {
-            TableSlice ts = new TableSlice(tab, Selection.withRange(index, Math.min(index+maxPerTransaction, numRows)));
-            Map<String, Packaging> addedPackagingsMap = packagingController.addPackagings(ts, mapDrugs, mapActiveIngredients);
-            packagingsMap.putAll(addedPackagingsMap);
-        }
-        return packagingsMap;
-    }
-
-    public Map<String, ActiveIngredient> addActiveIngredients(Table tab, int maxPerTransaction){
-        Map<String, ActiveIngredient> activeIngredientsMap = new HashMap<>();
-        int numRows = tab.rowCount();
-        for(int index = 0; index < numRows; index += maxPerTransaction) {
-            TableSlice ts = new TableSlice(tab, Selection.withRange(index, Math.min(index+maxPerTransaction, numRows)));
-            Map<String, ActiveIngredient> addedActiveIngredientsMap = activeIngredientController.addActiveIngredients(ts);
-            activeIngredientsMap.putAll(addedActiveIngredientsMap);
-        }
-        return activeIngredientsMap;
+    public void setLastUpdate() {
+        lastUpdateDao.setLastUpdate();
     }
 }

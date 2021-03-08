@@ -7,13 +7,14 @@ import com.fedem96.model.Company;
 import com.fedem96.model.Drug;
 import com.fedem96.model.ModelFactory;
 import tech.tablesaw.api.Row;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.selection.Selection;
+import tech.tablesaw.table.TableSlice;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class DrugController {
 
@@ -22,13 +23,24 @@ public class DrugController {
     @Inject
     private DrugMapper drugMapper;
 
-    @Transactional
-    public Map<Long, Drug> addDrugs(Iterable<Row> rows, Map<Long, Company> mapCompanies){
+    public Map<Long, Drug> addDrugs(Table tab, Map<Long, Company> mapCompanies, int maxPerTransaction){
+        Map<Long, Drug> drugsMap = new HashMap<>();
+        int numRows = tab.rowCount();
+        for(int index = 0; index < numRows; index += maxPerTransaction) {
+            TableSlice ts = new TableSlice(tab, Selection.withRange(index, Math.min(index+maxPerTransaction, numRows)));
+            Map<Long, Drug> addedDrugsMap = extractDrugs(ts, mapCompanies);
+            drugDao.save(addedDrugsMap.values());
+            drugsMap.putAll(addedDrugsMap);
+        }
+        return drugsMap;
+    }
+
+    public Map<Long, Drug> extractDrugs(Iterable<Row> rows, Map<Long, Company> mapCompanies){
         Map<Long, Drug> map = new HashMap<>();
         for (Row row: rows){
             long code = row.getInt("sm_field_codice_farmaco");
             Drug drug = drugDao.findByCode(code);
-            if(drug == null){   // drug not already in DB
+            if(drug == null){
                 drug = ModelFactory.drug();
             }
             drug.setCode(code);
@@ -36,7 +48,7 @@ public class DrugController {
             drug.setLinkFi(row.getString("sm_field_link_fi"));
             drug.setLinkRcp(row.getString("sm_field_link_rcp"));
             drug.setCompany(mapCompanies.get((long) row.getInt("sm_field_codice_ditta")));
-            drugDao.save(drug);
+//            drugDao.save(drug);
             map.put(code, drug);
         }
         return map;

@@ -1,11 +1,15 @@
 package com.fedem96.dao;
 
+import com.fedem96.model.BaseEntity;
+
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
-public abstract class BaseDao<T> implements Serializable {
+public abstract class BaseDao<T extends BaseEntity> implements Serializable {
 
     private final Class<T> type;
 
@@ -20,12 +24,18 @@ public abstract class BaseDao<T> implements Serializable {
         return entityManager.find( type, id );
     }
 
+    @Transactional
     public void save( T entity ) {
-        entityManager.persist( entity );
+        if(entity.getId() == null)
+            entityManager.persist( entity );
+        else
+            entityManager.merge( entity );
     }
 
-    public void update( T entity ) {
-        entityManager.merge( entity );
+    @Transactional
+    public void save(Collection<T> entities ) {
+        for(BaseEntity entity: entities)
+            this.save( (T) entity );
     }
 
     public void delete( T entity ) {

@@ -6,9 +6,11 @@ import com.fedem96.model.Drug;
 import com.fedem96.model.ModelFactory;
 import com.fedem96.model.Packaging;
 import tech.tablesaw.api.Row;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.selection.Selection;
+import tech.tablesaw.table.TableSlice;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -17,8 +19,19 @@ public class PackagingController {
     @Inject
     PackagingDao packagingDao;
 
-    @Transactional
-    public Map<String, Packaging> addPackagings(Iterable<Row> rows, Map<Long, Drug> drugsMap, Map<String, ActiveIngredient> mapActiveIngredients){
+    public Map<String, Packaging> addPackagings(Table tab, Map<Long, Drug> mapDrugs, Map<String, ActiveIngredient> mapActiveIngredients, int maxPerTransaction){
+        Map<String, Packaging> packagingsMap = new HashMap<>();
+        int numRows = tab.rowCount();
+        for(int index = 0; index < numRows; index += maxPerTransaction) {
+            TableSlice ts = new TableSlice(tab, Selection.withRange(index, Math.min(index+maxPerTransaction, numRows)));
+            Map<String, Packaging> addedPackagingsMap = extractPackagings(ts, mapDrugs, mapActiveIngredients);
+            packagingDao.save(addedPackagingsMap.values());
+            packagingsMap.putAll(addedPackagingsMap);
+        }
+        return packagingsMap;
+    }
+
+    public Map<String, Packaging> extractPackagings(Iterable<Row> rows, Map<Long, Drug> drugsMap, Map<String, ActiveIngredient> mapActiveIngredients){
         Map<String, Packaging> map = new HashMap<>();
         for (Row row: rows){
             String aic = "" + row.getInt("sm_field_aic");
@@ -34,7 +47,7 @@ public class PackagingController {
                 System.err.println("WARNING: detected invalid ATC '" + atc + "'");
             packaging.setActiveIngredient(mapActiveIngredients.get(atc));
             packaging.setDrug(drugsMap.get((long) row.getInt("sm_field_codice_farmaco")));
-            packagingDao.save(packaging);
+//            packagingDao.save(packaging);
             map.put(aic, packaging);
         }
         return map;
