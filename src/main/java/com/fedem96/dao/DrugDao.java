@@ -22,7 +22,7 @@ public class DrugDao extends BaseDao<Drug> {
 
     public List<Drug> getAll() {
         try {
-            return entityManager.createQuery("FROM Drug d LEFT JOIN FETCH d.packagings").getResultList();
+            return entityManager.createQuery("SELECT DISTINCT d FROM Drug d LEFT JOIN FETCH d.packagings").getResultList();
         }
         catch (NoResultException nre){
             return null;
@@ -31,7 +31,7 @@ public class DrugDao extends BaseDao<Drug> {
 
     public List<Drug> searchByDrug(String drug, Integer firstResult, Integer maxResults) {
         drug = drug.toLowerCase();
-        Query q = entityManager.createQuery("FROM Drug d LEFT JOIN FETCH d.packagings " +
+        Query q = entityManager.createQuery("SELECT DISTINCT d FROM Drug d LEFT JOIN FETCH d.packagings " +
                 "WHERE LOWER(d.description) LIKE :drug")
                 .setParameter("drug", "%" + drug + "%");
         if(firstResult != null)
@@ -43,7 +43,7 @@ public class DrugDao extends BaseDao<Drug> {
 
     public List<Drug> searchByCompany(String company, Integer firstResult, Integer maxResults) {
         company = company.toLowerCase();
-        Query q = entityManager.createQuery("FROM Drug d LEFT JOIN FETCH d.packagings " +
+        Query q = entityManager.createQuery("SELECT DISTINCT d FROM Drug d LEFT JOIN FETCH d.packagings " +
                 "WHERE LOWER(d.company.description) LIKE :company")
                 .setParameter("company", "%" + company + "%");
         if(firstResult != null)
@@ -55,7 +55,7 @@ public class DrugDao extends BaseDao<Drug> {
 
     public List<Drug> searchByActiveIngredient(String activeIngredient, Integer firstResult, Integer maxResults) {
         activeIngredient = activeIngredient.toLowerCase();
-        Query q = entityManager.createQuery("FROM Drug d LEFT JOIN FETCH d.packagings " +
+        Query q = entityManager.createQuery("SELECT DISTINCT d FROM Drug d LEFT JOIN FETCH d.packagings " +
                 "WHERE EXISTS (FROM Packaging p WHERE p.drug=d AND LOWER(P.activeIngredient.description) LIKE :activeIngredient)")
                 .setParameter("activeIngredient", "%" + activeIngredient + "%");
         if(firstResult != null)
@@ -67,7 +67,7 @@ public class DrugDao extends BaseDao<Drug> {
 
     public List<Drug> search(String text, Integer firstResult, Integer maxResults) {
         text = text.toLowerCase();
-        Query q = entityManager.createQuery("FROM Drug d LEFT JOIN FETCH d.packagings " +
+        Query q = entityManager.createQuery("SELECT DISTINCT d FROM Drug d LEFT JOIN FETCH d.packagings " +
                 "WHERE LOWER(d.description) LIKE :text OR LOWER(d.company.description) LIKE :text OR EXISTS (FROM Packaging p WHERE p.drug=d AND LOWER(P.activeIngredient.description) LIKE :text)")
                 .setParameter("text", "%" + text + "%");
         if(firstResult != null)
