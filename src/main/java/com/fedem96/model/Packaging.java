@@ -10,11 +10,11 @@ import javax.persistence.Table;
 public class Packaging extends BaseEntity {
 
     @Column(unique = true, length = 31)
-    String aic;
+    private String aic;
 
     @Column(length = 1023)
-    String description;
-    String state;
+    private String description;
+    private String state;
 
     @ManyToOne
     private ActiveIngredient activeIngredient;

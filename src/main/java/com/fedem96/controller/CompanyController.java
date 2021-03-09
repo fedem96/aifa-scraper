@@ -61,7 +61,7 @@ public class CompanyController {
         return companyMapper.convert(companyDao.getAll());
     }
 
-    public List<CompanyDto> search(String company){
-        return companyMapper.convert(companyDao.search(company));
+    public List<CompanyDto> search(String company, Integer firstResult, Integer maxResults){
+        return companyMapper.convert(companyDao.search(company, firstResult, maxResults));
     }
 }

@@ -9,8 +9,8 @@ import javax.persistence.Table;
 public class Company extends BaseEntity {
 
     @Column(unique = true, length = 31)
-    Long code;
-    String description;
+    private Long code;
+    private String description;
 
     protected Company() {}
     public Company(String uuid) {

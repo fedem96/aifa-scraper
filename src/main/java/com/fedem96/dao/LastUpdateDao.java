@@ -16,7 +16,7 @@ public class LastUpdateDao extends BaseDao<LastUpdate> {
 
     public LastUpdate findSingleton() {
         try {
-            return (LastUpdate) entityManager.createQuery("from LastUpdate").getSingleResult();
+            return (LastUpdate) entityManager.createQuery("FROM LastUpdate").getSingleResult();
         }
         catch (NoResultException nre){
             LastUpdate lu = ModelFactory.lastUpdate();

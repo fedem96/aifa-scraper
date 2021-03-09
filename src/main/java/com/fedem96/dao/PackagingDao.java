@@ -11,7 +11,7 @@ public class PackagingDao extends BaseDao<Packaging> {
 
     public Packaging findByAic(String aic) {
         try {
-            return (Packaging) entityManager.createQuery("from Packaging where aic=:aic").setParameter("aic", aic).getResultList().get(0);
+            return (Packaging) entityManager.createQuery("FROM Packaging WHERE aic=:aic").setParameter("aic", aic).getResultList().get(0);
         }
         catch (IndexOutOfBoundsException | NoResultException e){
             return null;

@@ -9,8 +9,8 @@ import javax.persistence.Table;
 public class ActiveIngredient extends BaseEntity {
 
     @Column(unique = true)
-    String atc;
-    String description;
+    private String atc;
+    private String description;
 
     protected ActiveIngredient() {}
     public ActiveIngredient(String uuid) {

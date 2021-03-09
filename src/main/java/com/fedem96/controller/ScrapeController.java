@@ -82,7 +82,7 @@ public class ScrapeController {
             table.addColumns(newCol);
         }
 
-        Table tabDrugs = table.select(DRUG_COLUMNS).dropDuplicateRows(); // TODO: handle missing values
+        Table tabDrugs = table.select(DRUG_COLUMNS).dropDuplicateRows();
         Table tabCompanies = table.select(COMPANY_COLUMNS).dropDuplicateRows();
         Table tabActiveIngredients = table.select(ACTIVE_INGREDIENT_COLUMNS).dropDuplicateRows();
         Table tabPackagings = table.select(PACKAGING_COLUMNS).dropDuplicateRows();

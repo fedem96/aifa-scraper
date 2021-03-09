@@ -25,7 +25,7 @@ public class ActiveIngredientController {
         for(int index = 0; index < numRows; index += maxPerTransaction) {
             TableSlice ts = new TableSlice(tab, Selection.withRange(index, Math.min(index+maxPerTransaction, numRows)));
             Map<String, ActiveIngredient> addedActiveIngredientsMap = extractActiveIngredients(ts);
-            activeIngredientDao.save(activeIngredientsMap.values());
+            activeIngredientDao.save(addedActiveIngredientsMap.values());
             activeIngredientsMap.putAll(addedActiveIngredientsMap);
         }
         return activeIngredientsMap;
@@ -57,7 +57,7 @@ public class ActiveIngredientController {
         return activeIngredientDao.getAll();
     }
 
-    public List<ActiveIngredient> search(String activeIngredient){
-        return activeIngredientDao.search(activeIngredient);
+    public List<ActiveIngredient> search(String activeIngredient, Integer firstResult, Integer maxResults){
+        return activeIngredientDao.search(activeIngredient, firstResult, maxResults);
     }
 }

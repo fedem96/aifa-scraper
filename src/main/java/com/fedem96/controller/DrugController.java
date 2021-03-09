@@ -62,19 +62,19 @@ public class DrugController {
         return drugMapper.convert(drugDao.getAll());
     }
 
-    public List<DrugDto> searchByDrug(String drug){
-        return drugMapper.convert(drugDao.searchByDrug(drug));
+    public List<DrugDto> searchByDrug(String drug, Integer firstResult, Integer maxResults){
+        return drugMapper.convert(drugDao.searchByDrug(drug, firstResult, maxResults));
     }
 
-    public List<DrugDto> searchByCompany(String company){
-        return drugMapper.convert(drugDao.searchByCompany(company));
+    public List<DrugDto> searchByCompany(String company, Integer firstResult, Integer maxResults){
+        return drugMapper.convert(drugDao.searchByCompany(company, firstResult, maxResults));
     }
 
-    public List<DrugDto> searchByActiveIngredient(String activeIngredient){
-        return drugMapper.convert(drugDao.searchByActiveIngredient(activeIngredient));
+    public List<DrugDto> searchByActiveIngredient(String activeIngredient, Integer firstResult, Integer maxResults){
+        return drugMapper.convert(drugDao.searchByActiveIngredient(activeIngredient, firstResult, maxResults));
     }
 
-    public List<DrugDto> search(String text){
-        return drugMapper.convert(drugDao.search(text));
+    public List<DrugDto> search(String text, Integer firstResult, Integer maxResults){
+        return drugMapper.convert(drugDao.search(text, firstResult, maxResults));
     }
 }

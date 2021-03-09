@@ -1,4 +1,4 @@
-package com.fedem96.rest;
+package com.fedem96.api;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;

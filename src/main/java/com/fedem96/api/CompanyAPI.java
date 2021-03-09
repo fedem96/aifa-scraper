@@ -1,4 +1,4 @@
-package com.fedem96.rest;
+package com.fedem96.api;
 
 import com.fedem96.controller.CompanyController;
 import com.fedem96.dto.CompanyDto;

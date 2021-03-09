@@ -1,4 +1,4 @@
-package com.fedem96.rest;
+package com.fedem96.api;
 
 import com.fedem96.controller.ActiveIngredientController;
 import com.fedem96.model.ActiveIngredient;
