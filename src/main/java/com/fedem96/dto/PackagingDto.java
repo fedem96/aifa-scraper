@@ -2,6 +2,8 @@ package com.fedem96.dto;
 
 public class PackagingDto extends BaseDto{
 
+    // This DTO is defined in this way to be compatible with an existing client
+
     private Long id;
     private String name;
     private String versionClass;

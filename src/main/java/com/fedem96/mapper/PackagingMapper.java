@@ -7,6 +7,8 @@ import java.util.Random;
 
 public class PackagingMapper extends BaseMapper<Packaging, PackagingDto>{
 
+    // since DTO contains some data not stored on the database, they are randomly generated
+
     @Override
     public PackagingDto convert(Packaging packaging){
         if(packaging == null){
@@ -19,7 +21,7 @@ public class PackagingMapper extends BaseMapper<Packaging, PackagingDto>{
         packDto.setCompanyName(packaging.getDrug().getCompany().getDescription());
         packDto.setDescription(packaging.getDescription());
         packDto.setName(packaging.getDescription());
-        packDto.setPrice(r.nextFloat());
+        packDto.setPrice(((int)(r.nextFloat()*100)) / 100f);
         packDto.setGluten(r.nextBoolean());
         packDto.setLactose(r.nextBoolean());
         packDto.setLeaflet(packaging.getDrug().getLinkFi());
