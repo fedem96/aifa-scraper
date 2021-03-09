@@ -20,13 +20,11 @@ public class Scraper {
     @PUT
     @Produces(MediaType.TEXT_PLAIN)
     public Response scrape(@QueryParam("url") String url, @QueryParam("file") String file,
-               @QueryParam("start") Integer start, @QueryParam("pageSize") Integer pageSize, @QueryParam("rows") Integer rows,
+               @QueryParam("start") @DefaultValue("0") Integer start, @QueryParam("pageSize") Integer pageSize, @QueryParam("rows") @DefaultValue("10") Integer rows,
                @QueryParam("checkLastUpdate") @DefaultValue("false") boolean checkLastUpdate, @QueryParam("year") Integer year) {
         if(url != null && file != null){
             return Response.serverError().entity("at most one between url and file can be set").build();
         }
-        if(start == null)
-            start = 0;
         if(pageSize == null)
             pageSize = rows;
         System.out.println("Scraping");

@@ -58,23 +58,23 @@ public class DrugController {
         return drugMapper.convert(drugDao.findById(drugId));
     }
 
-    public List<DrugDto> getAllDrugs() {
-        return drugMapper.convert(drugDao.getAll());
+    public List<DrugDto> getAllDrugs(boolean returnRetired) {
+        return drugMapper.convert(drugDao.getAll(), returnRetired);
     }
 
-    public List<DrugDto> searchByDrug(String drug, Integer firstResult, Integer maxResults){
-        return drugMapper.convert(drugDao.searchByDrug(drug, firstResult, maxResults));
+    public List<DrugDto> searchByDrug(String drug, Integer firstResult, Integer maxResults, boolean returnRetired){
+        return drugMapper.convert(drugDao.searchByDrug(drug, firstResult, maxResults), returnRetired);
     }
 
-    public List<DrugDto> searchByCompany(String company, Integer firstResult, Integer maxResults){
-        return drugMapper.convert(drugDao.searchByCompany(company, firstResult, maxResults));
+    public List<DrugDto> searchByCompany(String company, Integer firstResult, Integer maxResults, boolean returnRetired){
+        return drugMapper.convert(drugDao.searchByCompany(company, firstResult, maxResults), returnRetired);
     }
 
-    public List<DrugDto> searchByActiveIngredient(String activeIngredient, Integer firstResult, Integer maxResults){
-        return drugMapper.convert(drugDao.searchByActiveIngredient(activeIngredient, firstResult, maxResults));
+    public List<DrugDto> searchByActiveIngredient(String activeIngredient, Integer firstResult, Integer maxResults, boolean returnRetired){
+        return drugMapper.convert(drugDao.searchByActiveIngredient(activeIngredient, firstResult, maxResults), returnRetired);
     }
 
-    public List<DrugDto> search(String text, Integer firstResult, Integer maxResults){
-        return drugMapper.convert(drugDao.search(text, firstResult, maxResults));
+    public List<DrugDto> search(String text, Integer firstResult, Integer maxResults, boolean returnRetired){
+        return drugMapper.convert(drugDao.search(text, firstResult, maxResults), returnRetired);
     }
 }
