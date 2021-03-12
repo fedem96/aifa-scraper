@@ -1,11 +1,13 @@
 package com.fedem96.mapper;
 
+import com.fedem96.dto.BaseDto;
+import com.fedem96.model.BaseEntity;
+
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class BaseMapper<T, dtoT> {
+public abstract class BaseMapper<T extends BaseEntity, dtoT extends BaseDto> {
 
     public abstract dtoT convert(T obj);
 

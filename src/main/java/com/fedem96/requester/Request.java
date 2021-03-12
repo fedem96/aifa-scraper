@@ -25,11 +25,6 @@ public class Request {
         return this;
     }
 
-    public Request dataField(String field){ // TODO: decide whether to remove
-        parameters.put("df", field);
-        return this;
-    }
-
     public Request format(String format){
         if(!format.equals("csv") && !format.equals("json") && !format.equals("xml")){
             throw new IllegalArgumentException("Invalid format: '" + format + "'. Possible values: {csv, json, xml}");

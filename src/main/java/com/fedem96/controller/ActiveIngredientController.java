@@ -1,6 +1,8 @@
 package com.fedem96.controller;
 
 import com.fedem96.dao.ActiveIngredientDao;
+import com.fedem96.dto.ActiveIngredientDto;
+import com.fedem96.mapper.ActiveIngredientMapper;
 import com.fedem96.model.ActiveIngredient;
 import com.fedem96.model.ModelFactory;
 import tech.tablesaw.api.Row;
@@ -18,6 +20,8 @@ public class ActiveIngredientController {
 
     @Inject
     ActiveIngredientDao activeIngredientDao;
+    @Inject
+    ActiveIngredientMapper activeIngredientMapper;
 
     public Map<String, ActiveIngredient> addActiveIngredients(Table tab, int maxPerTransaction){
         Map<String, ActiveIngredient> activeIngredientsMap = new HashMap<>();
@@ -49,15 +53,15 @@ public class ActiveIngredientController {
         return map;
     }
 
-    public ActiveIngredient getById(Long activeIngredientId) {
-        return activeIngredientDao.findById(activeIngredientId);
+    public ActiveIngredientDto getById(Long activeIngredientId) {
+        return activeIngredientMapper.convert(activeIngredientDao.findById(activeIngredientId));
     }
 
-    public List<ActiveIngredient> getAllActiveIngredients() {
-        return activeIngredientDao.getAll();
+    public List<ActiveIngredientDto> getAllActiveIngredients() {
+        return activeIngredientMapper.convert(activeIngredientDao.getAll());
     }
 
-    public List<ActiveIngredient> search(String activeIngredient, Integer firstResult, Integer maxResults){
-        return activeIngredientDao.search(activeIngredient, firstResult, maxResults);
+    public List<ActiveIngredientDto> search(String activeIngredient, Integer firstResult, Integer maxResults){
+        return activeIngredientMapper.convert(activeIngredientDao.search(activeIngredient, firstResult, maxResults));
     }
 }

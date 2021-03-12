@@ -1,7 +1,7 @@
 package com.fedem96.api;
 
 import com.fedem96.controller.ActiveIngredientController;
-import com.fedem96.model.ActiveIngredient;
+import com.fedem96.dto.ActiveIngredientDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -22,7 +22,7 @@ public class ActiveIngredientAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getActiveIngredients(){
         System.out.println("Getting all activeIngredients");
-        List<ActiveIngredient> activeIngredients = activeIngredientController.getAllActiveIngredients();
+        List<ActiveIngredientDto> activeIngredients = activeIngredientController.getAllActiveIngredients();
         return Response.ok(activeIngredients).build();
     }
 
@@ -31,7 +31,7 @@ public class ActiveIngredientAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getActiveIngredient(@PathParam("activeIngredientId") Long activeIngredientId){
         System.out.println("Getting activeIngredient with id='" + activeIngredientId +"'");
-        ActiveIngredient activeIngredient = activeIngredientController.getById(activeIngredientId);
+        ActiveIngredientDto activeIngredient = activeIngredientController.getById(activeIngredientId);
         return Response.ok(activeIngredient).build();
     }
     
