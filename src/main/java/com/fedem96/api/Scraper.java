@@ -20,20 +20,21 @@ public class Scraper {
     @PUT
     @Produces(MediaType.TEXT_PLAIN)
     public Response scrape(@QueryParam("url") String url, @QueryParam("file") String file,
-               @QueryParam("start") @DefaultValue("0") Integer start, @QueryParam("pageSize") Integer pageSize, @QueryParam("rows") @DefaultValue("10") Integer rows,
-               @QueryParam("checkLastUpdate") @DefaultValue("false") boolean checkLastUpdate, @QueryParam("year") Integer year) {
+               @QueryParam("firstResult") @DefaultValue("0") Integer firstResult, @QueryParam("downloadSize") Integer downloadSize, @QueryParam("maxResults") @DefaultValue("10") Integer maxResults,
+               @QueryParam("checkLastUpdate") @DefaultValue("false") boolean checkLastUpdate, @QueryParam("year") Integer year,
+               @QueryParam("transactionSize") @DefaultValue("1000") Integer transactionSize) {
         if(url != null && file != null){
             return Response.serverError().entity("at most one between url and file can be set").build();
         }
-        if(pageSize == null)
-            pageSize = rows;
+        if(downloadSize == null)
+            downloadSize = maxResults;
         System.out.println("Scraping");
         long startingTime = currentTimeMillis();
         try {
             if(file == null)
-                scrapeController.scrapeURL(url, start, pageSize, rows, year, checkLastUpdate);
+                scrapeController.scrapeURL(url, firstResult, downloadSize, maxResults, year, transactionSize, checkLastUpdate);
             else
-                scrapeController.scrapeFile(file, start, pageSize, rows, checkLastUpdate);
+                scrapeController.scrapeFile(file, firstResult, downloadSize, maxResults, transactionSize, checkLastUpdate);
             scrapeController.setLastUpdate();
             return Response.ok().entity("done in " + ((currentTimeMillis()-startingTime)*0.001) + " seconds").build();
         } catch (FileNotFoundException e){

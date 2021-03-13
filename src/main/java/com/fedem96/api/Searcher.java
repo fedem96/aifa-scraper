@@ -19,7 +19,7 @@ public class Searcher {
     @Produces(MediaType.APPLICATION_JSON)
     public Response search(@QueryParam("drug") String drug, @QueryParam("activeIngredient") String activeIngredient, @QueryParam("company") String company,
                            @QueryParam("name") String name /*alias for drug*/, @QueryParam("text") String text,
-                           @QueryParam("first") Integer firstResult, @QueryParam("num") Integer maxResults,
+                           @QueryParam("firstResult") Integer firstResult, @QueryParam("maxResults") Integer maxResults,
                            @QueryParam("retired") @DefaultValue("false") boolean returnRetired) {
         if(drug == null) drug = name;
         try {

@@ -48,29 +48,29 @@ public class ScrapeController {
             "sm_field_codice_farmaco", "sm_field_codice_atc"};
 
 
-    public void scrapeURL(String url, int start, int rowsPerPage, int maxRows, Integer year, boolean checkLastUpdate) throws IOException {
+    public void scrapeURL(String url, int firstResult, int downloadSize, int maxResults, Integer year, int transactionSize, boolean checkLastUpdate) throws IOException {
         Set<String> columns = new HashSet<>();
         columns.addAll(Arrays.asList(ACTIVE_INGREDIENT_COLUMNS));
         columns.addAll(Arrays.asList(COMPANY_COLUMNS));
         columns.addAll(Arrays.asList(DRUG_COLUMNS));
         columns.addAll(Arrays.asList(PACKAGING_COLUMNS));
         columns.add(LAST_UPDATE_DATE_TIME_COLUMN);
-        for (int pageStart = start; pageStart < start+maxRows; pageStart+=rowsPerPage) {
-            String csvText = RequestFactory.scrapeFromUrl(url).year(year).columns(columns).start(pageStart).rows(rowsPerPage).send();
-            processScraped(csvText, checkLastUpdate);
+        for (int pageStart = firstResult; pageStart < firstResult+maxResults; pageStart+=downloadSize) {
+            String csvText = RequestFactory.scrapeFromUrl(url).year(year).columns(columns).start(pageStart).rows(downloadSize).send();
+            processScraped(csvText, transactionSize, checkLastUpdate);
         }
     }
 
-    public void scrapeFile(String file, int start, int rowsPerPage, int maxRows, boolean checkLastUpdate) throws IOException {
-        for (int pageStart = start; pageStart < start+maxRows; pageStart+=rowsPerPage) {
-            String csvText = RequestFactory.scrapeFromFile(file).start(pageStart).rows(rowsPerPage).send();
+    public void scrapeFile(String file, int firstResult, int downloadSize, int maxResults, int transactionSize, boolean checkLastUpdate) throws IOException {
+        for (int pageStart = firstResult; pageStart < firstResult+maxResults; pageStart+=downloadSize) {
+            String csvText = RequestFactory.scrapeFromFile(file).start(pageStart).rows(downloadSize).send();
             if(csvText == null) // file has no more rows
                 break;
-            processScraped(csvText, checkLastUpdate);
+            processScraped(csvText, transactionSize, checkLastUpdate);
         }
     }
 
-    private void processScraped(String csvText, boolean checkLastUpdate) throws IOException {
+    private void processScraped(String csvText, int transactionSize, boolean checkLastUpdate) throws IOException {
         Table table = textToTable(csvText, DATE_TIME_PATTERN);
 
         if(checkLastUpdate)
@@ -87,11 +87,10 @@ public class ScrapeController {
         Table tabActiveIngredients = table.select(ACTIVE_INGREDIENT_COLUMNS).dropDuplicateRows();
         Table tabPackagings = table.select(PACKAGING_COLUMNS).dropDuplicateRows();
 
-        int maxPerTransaction = 1000;
-        Map<Long, Company> mapCompanies = companyController.addCompanies(tabCompanies, maxPerTransaction);
-        Map<String, ActiveIngredient> mapActiveIngredients = activeIngredientController.addActiveIngredients(tabActiveIngredients, maxPerTransaction);
-        Map<Long, Drug> drugsMap = drugController.addDrugs(tabDrugs, mapCompanies, maxPerTransaction);
-        packagingController.addPackagings(tabPackagings, drugsMap, mapActiveIngredients, maxPerTransaction);
+        Map<Long, Company> mapCompanies = companyController.addCompanies(tabCompanies, transactionSize);
+        Map<String, ActiveIngredient> mapActiveIngredients = activeIngredientController.addActiveIngredients(tabActiveIngredients, transactionSize);
+        Map<Long, Drug> drugsMap = drugController.addDrugs(tabDrugs, mapCompanies, transactionSize);
+        packagingController.addPackagings(tabPackagings, drugsMap, mapActiveIngredients, transactionSize);
     }
 
     private Table textToTable(String csvText, String dateTimePattern) throws IOException {
